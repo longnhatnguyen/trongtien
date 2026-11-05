@@ -1,33 +1,63 @@
-/* Custom enhancements for Graceful-04 Wedding Invitation */
+/* ==========================================================
+   WEDDING INVITATION THEME: MODERN WHITE & BLUSH PINK
+   Groom: Trọng Tiến · Bride: Thu Hương
+   Aesthetic: Luxury Romance · Minimalist Elegance · Pearlescent White & Rose Gold
+   ========================================================== */
 
 :root {
   --font-great-vibes: 'Great Vibes', cursive;
   --font-g4-lora: 'Lora', Georgia, serif;
   --font-inter: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --gold-primary: #928362;
-  --gold-light: #b6a77f;
-  --gold-dark: #7f704f;
-  --wine-red: #8F1D2C;
-  --paper-cream: #fff8ed;
-  --ink-dark: #37332c;
+
+  /* Modern White & Pink Romance Palette */
+  --pink-primary: #E07A8B;
+  --pink-primary-raw: 224, 122, 139;
+  --pink-deep: #C85A70;
+  --pink-deep-raw: 200, 90, 112;
+  --pink-soft: #FFF0F5;
+  --pink-blush: #FCE7EC;
+  --pink-mist: #FFF5F7;
+  --pink-border: rgba(224, 122, 139, 0.25);
+  --pink-glow: rgba(224, 122, 139, 0.18);
+  
+  --rose-gold: #DDA7A5;
+  --rose-gold-light: #F5D6D8;
+  --rose-gold-dark: #B76E79;
+  
+  --paper: #FFFFFF;
+  --paper-cream: #FFFBFD;
+  --ink-dark: #2D2424;
+  --ink-body: #4A3E3D;
+  --ink-muted: #7E6E71;
+
+  /* Graceful-04 Template Overrides */
+  --color-primary: #E07A8B !important;
+  --color-primary-raw: 224, 122, 139 !important;
+  --paper: #FFFFFF !important;
+  --ink: #2D2424 !important;
+  --g4r-ink-accent: #C85A70 !important;
+  --g4r-ink-accent-raw: 200, 90, 112 !important;
+  --g4r-ink-body: #4A3E3D !important;
+  --g4r-ink-body-raw: 74, 62, 61 !important;
 }
 
 body {
   margin: 0;
   padding: 0;
-  background-color: var(--paper-cream, #fff8ed) !important;
-  background-image: var(--g4-paper-base, url('../template/paper-base-seamless.jpg')) !important;
-  background-repeat: repeat;
-  color: var(--ink-dark);
+  background-color: #FFF9FA !important;
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(254, 226, 235, 0.5) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(252, 231, 243, 0.6) 0px, transparent 50%) !important;
+  color: var(--ink-body);
   font-family: var(--font-inter);
   overflow-x: hidden;
   min-height: 100vh;
 }
 
 .styles-module__WlSJYG__root {
-  background-color: var(--paper-cream, #fff8ed) !important;
-  background-image: var(--g4-paper-base, url('../template/paper-base-seamless.jpg')) !important;
-  background-repeat: repeat;
+  background-color: #FFF9FA !important;
+  background-image: none !important;
+  color: var(--ink-body) !important;
 }
 
 /* Ambient Canvas Particle */
@@ -40,21 +70,21 @@ body {
   z-index: 40;
 }
 
-/* Card wrapper: 100% on mobile, compact centered card on desktop with warm ivory surrounding */
+/* Card wrapper: 100% on mobile, modern centered card on desktop */
 .styles-module__WlSJYG__card-wrapper {
   width: 100% !important;
   max-width: 480px !important;
   margin: 0 auto !important;
-  background-color: var(--paper, #fff8ed) !important;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(182, 167, 127, 0.18) !important;
+  background-color: #FFFFFF !important;
+  box-shadow: 0 10px 40px var(--pink-glow), 0 0 0 1px var(--pink-border) !important;
   overflow: hidden !important;
 }
 
 @media (min-width: 768px) {
   .styles-module__WlSJYG__card-wrapper {
     margin: 36px auto !important;
-    border-radius: 14px !important;
-    box-shadow: 0 24px 60px rgba(146, 131, 98, 0.22), 0 0 0 1px rgba(182, 167, 127, 0.35) !important;
+    border-radius: 20px !important;
+    box-shadow: 0 25px 70px rgba(224, 122, 139, 0.16), 0 0 0 1px rgba(224, 122, 139, 0.22) !important;
   }
 }
 
@@ -63,7 +93,7 @@ body {
   display: none !important;
 }
 
-/* Keep inner content neatly centered and compact (thu gọn vào giữa) */
+/* Keep inner content neatly centered and compact */
 .styles-module__WlSJYG__card-banner-inner,
 .styles-module__WlSJYG__card-countdown-inner,
 .styles-module__WlSJYG__card-info-inner,
@@ -83,23 +113,80 @@ body {
   box-sizing: border-box !important;
 }
 
-/* Full-width banners */
+/* Clean white background for all sections */
+.styles-module__WlSJYG__card-countdown,
+.styles-module__WlSJYG__card-info,
+.styles-module__WlSJYG__card-love-story,
+.styles-module__WlSJYG__card-calendar,
+.styles-module__WlSJYG__card-gift,
+.styles-module__WlSJYG__card-comments,
+.styles-module__WlSJYG__rsvp-section {
+  background-color: #FFFFFF !important;
+}
+
+/* Soften vintage paper background textures into light airy accents */
+.styles-module__WlSJYG__card-countdown:before,
+.styles-module__WlSJYG__card-info:before,
+.styles-module__WlSJYG__card-info:after,
+.styles-module__WlSJYG__card-comments:after {
+  opacity: 0.2 !important;
+  background-position: center top !important;
+}
+
+/* Full-width banners with subtle modern rose-tinted gradient overlays */
 .styles-module__WlSJYG__hero-section {
   background-size: cover !important;
   background-position: center 30% !important;
   width: 100% !important;
+  position: relative;
+}
+
+.styles-module__WlSJYG__hero-overlay {
+  display: block !important;
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(224, 122, 139, 0.12) 0%, rgba(45, 36, 36, 0.45) 100%);
+  z-index: 0;
+}
+
+.styles-module__WlSJYG__wedding-text {
+  text-shadow: 0 2px 14px rgba(200, 90, 112, 0.4) !important;
+}
+
+.styles-module__WlSJYG__hero-tagline {
+  color: #FFE4E9 !important;
+  letter-spacing: 0.1em;
+  font-size: 14.5px;
+  font-weight: 400;
+  margin: 0 0 10px;
 }
 
 .styles-module__WlSJYG__save-date-section {
   background-size: cover !important;
   background-position: center !important;
   width: 100% !important;
+  position: relative;
+}
+
+.styles-module__WlSJYG__save-date-shade {
+  display: block !important;
+  position: absolute;
+  inset: 0;
+  background: rgba(45, 36, 36, 0.35);
 }
 
 .styles-module__WlSJYG__timeline-section {
   background-size: cover !important;
   background-position: center !important;
   width: 100% !important;
+  position: relative;
+}
+
+.styles-module__WlSJYG__timeline-shade {
+  display: block !important;
+  position: absolute;
+  inset: 0;
+  background: rgba(45, 36, 36, 0.55);
 }
 
 .styles-module__WlSJYG__app-footer {
@@ -110,18 +197,8 @@ body {
   object-fit: cover !important;
 }
 
-/* Decorative overlays centered */
-.styles-module__WlSJYG__card-countdown:before,
-.styles-module__WlSJYG__card-info:before {
-  background-position: center top !important;
-}
-
-.styles-module__WlSJYG__card-comments:after {
-  background-position: center bottom !important;
-}
-
 /* ==========================================================
-   INTERACTIVE 3D ENVELOPE OPENING EXPERIENCE
+   MODERN 3D ENVELOPE: WHITE & BLUSH PINK
    ========================================================== */
 .envelope-screen {
   position: fixed;
@@ -130,10 +207,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #1a1614;
-  background-image: 
-    radial-gradient(circle at 50% 35%, rgba(182, 167, 127, 0.28) 0%, transparent 65%),
-    linear-gradient(180deg, #141110 0%, #241e1a 100%);
+  background: 
+    radial-gradient(circle at 50% 30%, #FFF5F7 0%, #FCE4EC 55%, #F8BBD0 100%);
   overflow: hidden;
   transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1), transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -161,20 +236,20 @@ body {
 }
 
 .envelope-eyebrow {
-  color: #b6a77f;
+  color: #C85A70;
   font-size: 13px;
-  letter-spacing: 0.25em;
+  letter-spacing: 0.28em;
   text-transform: uppercase;
   margin: 0 0 6px;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .envelope-couple-names {
   font-family: var(--font-great-vibes);
-  font-size: clamp(2.4rem, 8vw, 3.2rem);
-  color: #fff8ed;
+  font-size: clamp(2.6rem, 8vw, 3.5rem);
+  color: #8F1D2C;
   margin: 0;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+  text-shadow: 0 2px 14px rgba(200, 90, 112, 0.25);
   line-height: 1.1;
 }
 
@@ -183,9 +258,10 @@ body {
   position: relative;
   width: 320px;
   height: 210px;
-  background: #FFFDF9;
-  border-radius: 8px;
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5), 0 0 30px rgba(182, 167, 127, 0.25);
+  background: #FFFFFF;
+  border-radius: 14px;
+  box-shadow: 0 24px 60px rgba(200, 90, 112, 0.22), 0 0 45px rgba(254, 226, 235, 0.85);
+  border: 1px solid rgba(224, 122, 139, 0.35);
   cursor: pointer;
   transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
   transform-style: preserve-3d;
@@ -199,9 +275,9 @@ body {
 .envelope-back {
   position: absolute;
   inset: 0;
-  background: #F4EAD9;
-  border-radius: 8px;
-  border: 1px solid rgba(182, 167, 127, 0.35);
+  background: #FFF5F7;
+  border-radius: 14px;
+  border: 1px solid rgba(224, 122, 139, 0.25);
   z-index: 1;
 }
 
@@ -212,11 +288,11 @@ body {
   left: 15px;
   right: 15px;
   height: 180px;
-  background: #FFFDF8;
-  border: 1px solid rgba(182, 167, 127, 0.4);
-  border-radius: 6px;
+  background: #FFFFFF;
+  border: 1px solid rgba(224, 122, 139, 0.35);
+  border-radius: 10px;
   z-index: 2;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 6px 20px rgba(200, 90, 112, 0.12);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -233,24 +309,24 @@ body {
 .letter-monogram {
   font-family: var(--font-g4-lora);
   font-size: 24px;
-  color: #928362;
+  color: #C85A70;
   font-weight: 600;
   letter-spacing: 0.1em;
-  border-bottom: 1px solid #b6a77f;
+  border-bottom: 1.5px solid #E07A8B;
   padding-bottom: 4px;
   margin-bottom: 6px;
 }
 
 .letter-save-date {
   font-family: var(--font-great-vibes);
-  font-size: 26px;
-  color: #8F1D2C;
+  font-size: 28px;
+  color: #C85A70;
   margin: 0;
 }
 
 .letter-date {
   font-size: 13px;
-  color: #7f704f;
+  color: #7E6E71;
   letter-spacing: 0.15em;
   margin: 4px 0 0;
 }
@@ -262,7 +338,7 @@ body {
   z-index: 3;
   pointer-events: none;
   overflow: hidden;
-  border-radius: 8px;
+  border-radius: 14px;
 }
 
 .envelope-pocket-bottom {
@@ -273,8 +349,8 @@ body {
   height: 0;
   border-style: solid;
   border-width: 0 160px 125px 160px;
-  border-color: transparent transparent #EFE3D0 transparent;
-  filter: drop-shadow(0 -3px 6px rgba(0, 0, 0, 0.06));
+  border-color: transparent transparent #FCE7EC transparent;
+  filter: drop-shadow(0 -3px 6px rgba(200, 90, 112, 0.08));
 }
 
 .envelope-pocket-left {
@@ -285,8 +361,8 @@ body {
   width: 0;
   border-style: solid;
   border-width: 105px 0 105px 160px;
-  border-color: transparent transparent transparent #E8DCBE;
-  opacity: 0.8;
+  border-color: transparent transparent transparent #FFF0F3;
+  opacity: 0.95;
 }
 
 .envelope-pocket-right {
@@ -297,39 +373,41 @@ body {
   width: 0;
   border-style: solid;
   border-width: 105px 160px 105px 0;
-  border-color: transparent #E8DCBE transparent transparent;
-  opacity: 0.8;
+  border-color: transparent #FFF0F3 transparent transparent;
+  opacity: 0.95;
 }
 
 /* Guest Name Badge */
 .envelope-guest-badge {
   position: absolute;
-  bottom: 30px;
+  bottom: 26px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 5;
-  background: #FFFDF9;
-  border: 1px solid #b6a77f;
-  border-radius: 6px;
-  padding: 8px 18px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(224, 122, 139, 0.35);
+  border-radius: 999px;
+  padding: 8px 24px;
   text-align: center;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
-  min-width: 190px;
+  box-shadow: 0 6px 20px rgba(200, 90, 112, 0.14);
+  min-width: 200px;
 }
 
 .guest-label {
   display: block;
-  font-size: 10.5px;
-  color: #7f704f;
-  letter-spacing: 0.08em;
+  font-size: 11px;
+  color: #C85A70;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
+  font-weight: 600;
   margin-bottom: 2px;
 }
 
 .guest-name-display {
   font-family: var(--font-g4-lora);
-  font-size: 14px;
-  color: #8F1D2C;
+  font-size: 15px;
+  color: #2D2424;
   font-weight: 600;
   white-space: nowrap;
 }
@@ -343,12 +421,12 @@ body {
   height: 0;
   border-style: solid;
   border-width: 120px 160px 0 160px;
-  border-color: #E2D3B3 transparent transparent transparent;
+  border-color: #FAD2E1 transparent transparent transparent;
   transform-origin: top center;
   transform: rotateX(0deg);
   transition: transform 0.65s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 4;
-  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.12));
+  filter: drop-shadow(0 4px 8px rgba(200, 90, 112, 0.12));
 }
 
 .envelope-flap.opened {
@@ -356,17 +434,17 @@ body {
   z-index: 1;
 }
 
-/* Wax Seal */
+/* Wax Seal (Rose Gold / Blush Pink) */
 .wax-seal {
   position: absolute;
   top: 105px;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 54px;
-  height: 54px;
+  width: 56px;
+  height: 56px;
   border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, #D4AF37, #8F1D2C 80%);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35), inset 0 0 0 2px rgba(255, 255, 255, 0.35);
+  background: radial-gradient(circle at 35% 30%, #FFE4E9 0%, #E07A8B 45%, #C85A70 85%);
+  box-shadow: 0 8px 24px rgba(200, 90, 112, 0.4), inset 0 0 0 2px rgba(255, 255, 255, 0.65);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -385,26 +463,26 @@ body {
 }
 
 .wax-seal-inner {
-  width: 40px;
-  height: 40px;
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
-  border: 1.5px dashed rgba(255, 255, 255, 0.65);
+  border: 1.5px dashed rgba(255, 255, 255, 0.85);
   display: flex;
   align-items: center;
   justify-content: center;
   color: #fff;
   font-family: var(--font-g4-lora);
-  font-size: 13px;
+  font-size: 13.5px;
   font-weight: 700;
   letter-spacing: 0.05em;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 1px 3px rgba(143, 29, 44, 0.4);
 }
 
 .wax-seal-pulse {
   position: absolute;
   inset: -6px;
   border-radius: 50%;
-  border: 1.5px solid rgba(212, 175, 55, 0.6);
+  border: 1.5px solid rgba(224, 122, 139, 0.65);
   animation: sealPulse 2s cubic-bezier(0.24, 0, 0.38, 1) infinite;
   pointer-events: none;
 }
@@ -425,16 +503,16 @@ body {
 }
 
 .open-invitation-btn {
-  background: linear-gradient(135deg, #b6a77f 0%, #8F1D2C 100%);
+  background: linear-gradient(135deg, #E07A8B 0%, #C85A70 100%);
   color: #fff;
   border: none;
-  padding: 14px 34px;
+  padding: 14px 36px;
   border-radius: 999px;
   font-size: 15px;
   font-weight: 600;
   letter-spacing: 0.04em;
   cursor: pointer;
-  box-shadow: 0 8px 24px rgba(143, 29, 44, 0.4), 0 0 15px rgba(182, 167, 127, 0.3);
+  box-shadow: 0 10px 28px rgba(200, 90, 112, 0.38), 0 0 20px rgba(254, 226, 235, 0.6);
   display: flex;
   align-items: center;
   gap: 10px;
@@ -443,7 +521,7 @@ body {
 
 .open-invitation-btn:hover {
   transform: translateY(-2px) scale(1.04);
-  box-shadow: 0 12px 30px rgba(143, 29, 44, 0.55), 0 0 25px rgba(182, 167, 127, 0.5);
+  box-shadow: 0 14px 34px rgba(200, 90, 112, 0.5), 0 0 25px rgba(254, 226, 235, 0.8);
 }
 
 .open-invitation-btn .btn-icon {
@@ -457,8 +535,8 @@ body {
 }
 
 .envelope-hint {
-  color: rgba(255, 255, 255, 0.55);
-  font-size: 12px;
+  color: #7E6E71;
+  font-size: 12.5px;
   margin-top: 10px;
   letter-spacing: 0.02em;
 }
@@ -482,7 +560,9 @@ body {
   }
 }
 
-/* Floating Audio Control */
+/* ==========================================================
+   FLOATING AUDIO DISC PLAYER
+   ========================================================== */
 .audio-player-control {
   position: fixed;
   bottom: 24px;
@@ -497,9 +577,9 @@ body {
   width: 52px;
   height: 52px;
   border-radius: 50%;
-  background: radial-gradient(circle, #2d261e 30%, #17130f 70%, #928362 100%);
-  border: 2px solid #b6a77f;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 15px rgba(182, 167, 127, 0.35);
+  background: radial-gradient(circle, #FFF0F5 28%, #E07A8B 72%, #C85A70 100%);
+  border: 2px solid #FAD2E1;
+  box-shadow: 0 8px 24px rgba(200, 90, 112, 0.35);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -511,7 +591,7 @@ body {
 
 .vinyl-disc-btn:hover {
   transform: scale(1.08);
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.5), 0 0 20px rgba(182, 167, 127, 0.6);
+  box-shadow: 0 10px 28px rgba(200, 90, 112, 0.5);
 }
 
 .vinyl-disc-btn.spinning {
@@ -531,7 +611,7 @@ body {
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: #8F1D2C;
+  background: #C85A70;
   border: 2px solid #fff;
   display: flex;
   align-items: center;
@@ -546,17 +626,18 @@ body {
   position: absolute;
   top: -12px;
   right: 0;
-  background: rgba(30, 27, 24, 0.85);
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(224, 122, 139, 0.35);
+  box-shadow: 0 2px 8px rgba(200, 90, 112, 0.15);
   padding: 3px 6px;
   border-radius: 10px;
-  border: 1px solid rgba(182, 167, 127, 0.3);
   backdrop-filter: blur(4px);
 }
 
 .wave-bar {
   width: 3px;
   height: 100%;
-  background: #b6a77f;
+  background: #E07A8B;
   border-radius: 2px;
   animation: waveBar 1.2s ease-in-out infinite alternate;
 }
@@ -574,11 +655,199 @@ body {
   display: none;
 }
 
-/* Modals */
+/* ==========================================================
+   COUNTDOWN TIMER (WHITE & PINK MODERN CARDS)
+   ========================================================== */
+.styles-module__WlSJYG__monogram-initial {
+  color: #C85A70 !important;
+}
+
+.styles-module__WlSJYG__countdown-section h3 {
+  color: #7E6E71 !important;
+}
+
+.styles-module__WlSJYG__countdown-piece .styles-module__WlSJYG__box {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(224, 122, 139, 0.28) !important;
+  box-shadow: 0 4px 14px rgba(200, 90, 112, 0.08) !important;
+  border-radius: 12px !important;
+}
+
+.styles-module__WlSJYG__countdown-piece .styles-module__WlSJYG__value {
+  color: #C85A70 !important;
+  font-weight: 600 !important;
+}
+
+.styles-module__WlSJYG__countdown-piece .styles-module__WlSJYG__colon {
+  color: #E07A8B !important;
+}
+
+/* ==========================================================
+   SIDE SWITCHER (NHÀ GÁI / NHÀ TRAI)
+   ========================================================== */
+.styles-module__WlSJYG__side-switch {
+  background: #FFF0F3 !important;
+  border: 1px solid rgba(224, 122, 139, 0.25) !important;
+  border-radius: 999px !important;
+  padding: 4px !important;
+}
+
+.styles-module__WlSJYG__side-switch button {
+  color: #7E6E71 !important;
+  font-weight: 600 !important;
+  border-radius: 999px !important;
+  transition: all 0.25s ease !important;
+}
+
+.styles-module__WlSJYG__side-switch button.styles-module__WlSJYG__active {
+  background: linear-gradient(135deg, #E07A8B, #C85A70) !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 4px 12px rgba(200, 90, 112, 0.35) !important;
+}
+
+/* ==========================================================
+   PARENTS & COUPLE INFO
+   ========================================================== */
+.styles-module__WlSJYG__parent .styles-module__WlSJYG__label {
+  color: #C85A70 !important;
+  font-weight: 600 !important;
+}
+
+.styles-module__WlSJYG__v-divider {
+  background: rgba(224, 122, 139, 0.3) !important;
+}
+
+.styles-module__WlSJYG__names .styles-module__WlSJYG__name {
+  color: #C85A70 !important;
+}
+
+.styles-module__WlSJYG__names .styles-module__WlSJYG__and {
+  color: #E07A8B !important;
+}
+
+.styles-module__WlSJYG__invitation-guest-name {
+  color: #C85A70 !important;
+}
+
+/* ==========================================================
+   EVENT CARDS (VU QUY & TIỆC CƯỚI)
+   ========================================================== */
+.styles-module__WlSJYG__invitation-event-block {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(224, 122, 139, 0.22) !important;
+  border-radius: 18px !important;
+  padding: 24px 20px !important;
+  margin: 16px 20px !important;
+  box-shadow: 0 8px 24px rgba(200, 90, 112, 0.06) !important;
+}
+
+.styles-module__WlSJYG__event-title {
+  color: #C85A70 !important;
+  font-family: var(--font-g4-lora) !important;
+  font-size: 20px !important;
+  font-weight: 600 !important;
+}
+
+.styles-module__WlSJYG__date-and-time-inner {
+  border-top-color: rgba(224, 122, 139, 0.25) !important;
+  border-bottom-color: rgba(224, 122, 139, 0.25) !important;
+}
+
+.styles-module__WlSJYG__time {
+  color: #C85A70 !important;
+}
+
+.styles-module__WlSJYG__date {
+  color: #2D2424 !important;
+}
+
+.styles-module__WlSJYG__location-button {
+  background: linear-gradient(135deg, #E07A8B, #C85A70) !important;
+  color: #FFFFFF !important;
+  border-radius: 999px !important;
+  padding: 10px 22px !important;
+  box-shadow: 0 4px 14px rgba(200, 90, 112, 0.3) !important;
+  border: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  font-weight: 500 !important;
+}
+
+/* ==========================================================
+   CALENDAR & TIMELINE
+   ========================================================== */
+.styles-module__WlSJYG__calendar-heart {
+  color: #E07A8B !important;
+}
+
+.styles-module__WlSJYG__calendar-inner .styles-module__WlSJYG__year,
+.styles-module__WlSJYG__calendar-inner .styles-module__WlSJYG__month {
+  color: #C85A70 !important;
+}
+
+.styles-module__WlSJYG__mini-calendar th {
+  color: #7E6E71 !important;
+}
+
+/* ==========================================================
+   LOVE STORY MILESTONES
+   ========================================================== */
+.story-card-item {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(224, 122, 139, 0.22) !important;
+  border-radius: 16px !important;
+  margin: 12px 20px;
+  padding: 18px;
+  box-shadow: 0 6px 18px rgba(200, 90, 112, 0.05) !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.story-card-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(200, 90, 112, 0.12) !important;
+}
+
+.story-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.story-card-year {
+  display: inline-block;
+  background: #FFF0F3 !important;
+  color: #C85A70 !important;
+  border: 1px solid rgba(224, 122, 139, 0.25) !important;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.story-card-title {
+  font-size: 16.5px;
+  font-weight: 600;
+  color: #2D2424 !important;
+  margin: 0;
+  font-family: var(--font-g4-lora);
+}
+
+.story-card-body {
+  margin-top: 10px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #4A3E3D !important;
+}
+
+/* ==========================================================
+   MODALS (GIFT BOX & BANKING QR)
+   ========================================================== */
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(18, 16, 14, 0.78);
+  background: rgba(30, 20, 25, 0.75);
   backdrop-filter: blur(8px);
   z-index: 100;
   display: flex;
@@ -596,10 +865,10 @@ body {
 }
 
 .modal-container {
-  background: #FFFDF9;
-  border: 1px solid rgba(146, 131, 98, 0.3);
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4), 0 0 30px rgba(146, 131, 98, 0.2);
-  border-radius: 20px;
+  background: #FFFFFF !important;
+  border: 1px solid rgba(224, 122, 139, 0.3) !important;
+  box-shadow: 0 25px 60px rgba(200, 90, 112, 0.25) !important;
+  border-radius: 20px !important;
   max-width: 440px;
   width: 100%;
   max-height: 90vh;
@@ -621,9 +890,9 @@ body {
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  border: 1px solid rgba(146, 131, 98, 0.3);
-  background: #FFF8ED;
-  color: #37332c;
+  border: 1px solid rgba(224, 122, 139, 0.3) !important;
+  background: #FFF0F3 !important;
+  color: #C85A70 !important;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -633,16 +902,16 @@ body {
 }
 
 .modal-close-btn:hover {
-  background: #8F1D2C;
-  color: #fff;
-  border-color: #8F1D2C;
+  background: #C85A70 !important;
+  color: #fff !important;
+  border-color: #C85A70 !important;
   transform: rotate(90deg);
 }
 
-/* Tab Switchers */
 .tab-switcher {
   display: flex;
-  background: #F3EBDD;
+  background: #FFF0F3 !important;
+  border: 1px solid rgba(224, 122, 139, 0.2) !important;
   border-radius: 999px;
   padding: 4px;
   gap: 4px;
@@ -655,7 +924,7 @@ body {
   border-radius: 999px;
   border: none;
   background: transparent;
-  color: #7f704f;
+  color: #7E6E71 !important;
   font-weight: 600;
   font-size: 14px;
   cursor: pointer;
@@ -663,15 +932,14 @@ body {
 }
 
 .tab-btn.active {
-  background: #928362;
-  color: #fff;
-  box-shadow: 0 4px 12px rgba(146, 131, 98, 0.35);
+  background: linear-gradient(135deg, #E07A8B, #C85A70) !important;
+  color: #fff !important;
+  box-shadow: 0 4px 12px rgba(200, 90, 112, 0.35) !important;
 }
 
-/* Bank Account Card */
 .bank-card {
-  background: linear-gradient(145deg, #FFFDF8, #F9F2E6);
-  border: 1px solid rgba(182, 167, 127, 0.35);
+  background: linear-gradient(145deg, #FFFFFF, #FFF5F7) !important;
+  border: 1px solid rgba(224, 122, 139, 0.3) !important;
   border-radius: 16px;
   padding: 18px;
   text-align: center;
@@ -685,7 +953,7 @@ body {
   object-fit: contain;
   margin: 0 auto 12px;
   border-radius: 12px;
-  border: 2px dashed rgba(182, 167, 127, 0.4);
+  border: 2px dashed rgba(224, 122, 139, 0.4) !important;
   padding: 6px;
   background: #fff;
 }
@@ -695,17 +963,17 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 8px 12px;
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.9) !important;
   border-radius: 8px;
   margin-bottom: 8px;
   font-size: 14px;
 }
 
 .copy-btn {
-  background: #928362;
-  color: #fff;
+  background: linear-gradient(135deg, #E07A8B, #C85A70) !important;
+  color: #fff !important;
   border: none;
-  padding: 6px 12px;
+  padding: 6px 14px;
   border-radius: 6px;
   font-size: 12px;
   font-weight: 600;
@@ -713,18 +981,129 @@ body {
   display: flex;
   align-items: center;
   gap: 4px;
-  transition: background 0.2s;
+  transition: all 0.2s;
 }
 
 .copy-btn:hover {
-  background: #7f704f;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(200, 90, 112, 0.3);
+}
+
+/* ==========================================================
+   GUESTBOOK & WISHES SYSTEM
+   ========================================================== */
+.guest-wish-card {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(224, 122, 139, 0.22) !important;
+  border-left: 3.5px solid #E07A8B !important;
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 12px;
+  box-shadow: 0 4px 12px rgba(200, 90, 112, 0.05);
+  animation: wishFadeIn 0.4s ease;
+}
+
+@keyframes wishFadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.guest-wish-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.guest-wish-name {
+  font-weight: 600;
+  color: #2D2424 !important;
+  font-size: 14px;
+}
+
+.guest-wish-tag {
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: #FFF0F3 !important;
+  color: #C85A70 !important;
+  font-weight: 500;
+}
+
+.guest-wish-content {
+  font-size: 13.5px;
+  color: #4A3E3D !important;
+  line-height: 1.5;
+  white-space: pre-line;
+}
+
+.guest-wish-time {
+  font-size: 11px;
+  color: #7E6E71 !important;
+  margin-top: 6px;
+  text-align: right;
+}
+
+.styles-module__WlSJYG__form-button,
+#submitWishBtn,
+.styles-module__WlSJYG__guestbook-start-button {
+  background: linear-gradient(135deg, #E07A8B 0%, #C85A70 100%) !important;
+  color: #fff !important;
+  border-radius: 999px !important;
+  box-shadow: 0 6px 18px rgba(200, 90, 112, 0.32) !important;
+  border: none !important;
+}
+
+.styles-module__WlSJYG__rsvp-options button.styles-module__WlSJYG__active,
+.styles-module__WlSJYG__guest-side-fields button.styles-module__WlSJYG__active {
+  background: linear-gradient(135deg, #E07A8B, #C85A70) !important;
+  color: #fff !important;
+  border-color: transparent !important;
+}
+
+/* Toast Container */
+#toast-container {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 150;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.toast-msg {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(224, 122, 139, 0.35) !important;
+  color: #2D2424 !important;
+  padding: 12px 22px;
+  border-radius: 999px;
+  box-shadow: 0 10px 30px rgba(200, 90, 112, 0.18) !important;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  opacity: 0;
+  transform: translateY(-15px);
+  animation: toastIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards, toastOut 0.4s 3s forwards;
+}
+
+@keyframes toastIn {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes toastOut {
+  to { opacity: 0; transform: translateY(-10px); }
 }
 
 /* Lightbox Modal */
 .lightbox-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.94);
+  background: rgba(20, 15, 18, 0.94);
   z-index: 120;
   display: flex;
   align-items: center;
@@ -743,7 +1122,7 @@ body {
   max-width: 90vw;
   max-height: 85vh;
   object-fit: contain;
-  border-radius: 10px;
+  border-radius: 12px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
   transform: scale(0.95);
   transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
@@ -760,8 +1139,8 @@ body {
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.35);
   color: #fff;
   display: flex;
   align-items: center;
@@ -781,157 +1160,9 @@ body {
 .lightbox-counter {
   position: absolute;
   bottom: 24px;
-  color: rgba(255, 255, 255, 0.75);
+  color: rgba(255, 255, 255, 0.85);
   font-size: 14px;
   letter-spacing: 0.1em;
-}
-
-/* Toast Container */
-#toast-container {
-  position: fixed;
-  top: 24px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 150;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  pointer-events: none;
-}
-
-.toast-msg {
-  background: #FFFDF9;
-  border: 1px solid #b6a77f;
-  color: #37332c;
-  padding: 12px 20px;
-  border-radius: 999px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 14px;
-  font-weight: 500;
-  opacity: 0;
-  transform: translateY(-15px);
-  animation: toastIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards, toastOut 0.4s 3s forwards;
-}
-
-@keyframes toastIn {
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes toastOut {
-  to { opacity: 0; transform: translateY(-10px); }
-}
-
-/* Love Story Accordion / Cards */
-.story-card-item {
-  background: #FFFDF8;
-  border: 1px solid rgba(146, 131, 98, 0.25);
-  border-radius: 14px;
-  margin: 12px 20px;
-  padding: 16px;
-  box-shadow: 0 4px 14px rgba(146, 131, 98, 0.08);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.story-card-item:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(146, 131, 98, 0.14);
-}
-
-.story-card-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  cursor: pointer;
-}
-
-.story-card-year {
-  display: inline-block;
-  background: #928362;
-  color: #fff;
-  padding: 3px 10px;
-  border-radius: 999px;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-}
-
-.story-card-title {
-  font-size: 16px;
-  font-weight: 600;
-  color: #37332c;
-  margin: 0;
-  font-family: var(--font-g4-lora);
-}
-
-.story-card-body {
-  margin-top: 10px;
-  font-size: 14px;
-  line-height: 1.6;
-  color: #5d554a;
-}
-
-.story-card-img {
-  width: 100%;
-  border-radius: 10px;
-  margin-top: 10px;
-  object-fit: cover;
-  max-height: 220px;
-}
-
-/* Live Guestbook List */
-.guest-wish-card {
-  background: #FFFDF9;
-  border: 1px solid rgba(146, 131, 98, 0.25);
-  border-left: 3px solid #8F1D2C;
-  border-radius: 12px;
-  padding: 14px;
-  margin-bottom: 12px;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.04);
-  animation: wishFadeIn 0.4s ease;
-}
-
-@keyframes wishFadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.guest-wish-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 6px;
-}
-
-.guest-wish-name {
-  font-weight: 600;
-  color: #37332c;
-  font-size: 14px;
-}
-
-.guest-wish-tag {
-  font-size: 11px;
-  padding: 2px 8px;
-  border-radius: 999px;
-  background: #F3EBDD;
-  color: #7f704f;
-  font-weight: 500;
-}
-
-.guest-wish-content {
-  font-size: 13.5px;
-  color: #554e44;
-  line-height: 1.5;
-  white-space: pre-line;
-}
-
-.guest-wish-time {
-  font-size: 11px;
-  color: #9c9183;
-  margin-top: 6px;
-  text-align: right;
 }
 
 /* Cursor pointer on interactive items */

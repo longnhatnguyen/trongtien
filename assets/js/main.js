@@ -107,8 +107,8 @@ function initEnvelope() {
 }
 
 function triggerConfettiBurst() {
-  const colors = ['#8F1D2C', '#D4AF37', '#b6a77f', '#F3D2C1', '#ffffff', '#FF758F'];
-  const burstCount = 42;
+  const colors = ['#E07A8B', '#C85A70', '#FAD2E1', '#FFF0F5', '#FFFFFF', '#DDA7A5', '#FCE7EC'];
+  const burstCount = 46;
 
   for (let i = 0; i < burstCount; i++) {
     const el = document.createElement('div');
@@ -739,9 +739,14 @@ function initParticles() {
       this.angle = Math.random() * 360;
       this.spin = (Math.random() - 0.5) * 2;
       this.alpha = 0.5 + Math.random() * 0.4;
-      this.color = Math.random() > 0.4 
-        ? 'rgba(215, 68, 85, ' // Rose red
-        : 'rgba(212, 175, 55, '; // Gold dust
+      const palette = [
+        'rgba(255, 182, 193, ', // Soft blush pink
+        'rgba(250, 210, 225, ', // Pastel petal pink
+        'rgba(224, 122, 139, ', // Modern rose
+        'rgba(245, 214, 216, ', // Rose gold shimmer
+        'rgba(255, 255, 255, '  // Pure white petal
+      ];
+      this.color = palette[Math.floor(Math.random() * palette.length)];
     }
     update() {
       this.y += this.speedY;
