@@ -15,15 +15,19 @@
 body {
   margin: 0;
   padding: 0;
-  background: #1e1b18;
-  background-image: 
-    radial-gradient(circle at 20% 20%, rgba(146, 131, 98, 0.12) 0%, transparent 40%),
-    radial-gradient(circle at 80% 80%, rgba(143, 29, 44, 0.08) 0%, transparent 40%),
-    linear-gradient(180deg, #181513 0%, #24201c 100%);
+  background-color: var(--paper-cream, #fff8ed) !important;
+  background-image: var(--g4-paper-base, url('../template/paper-base-seamless.jpg')) !important;
+  background-repeat: repeat;
   color: var(--ink-dark);
   font-family: var(--font-inter);
   overflow-x: hidden;
   min-height: 100vh;
+}
+
+.styles-module__WlSJYG__root {
+  background-color: var(--paper-cream, #fff8ed) !important;
+  background-image: var(--g4-paper-base, url('../template/paper-base-seamless.jpg')) !important;
+  background-repeat: repeat;
 }
 
 /* Ambient Canvas Particle */
@@ -36,11 +40,78 @@ body {
   z-index: 40;
 }
 
-/* Central Card Wrapper shadow & desktop look */
+/* Remove side gutters / black borders & make container full-width */
 .styles-module__WlSJYG__card-wrapper {
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45), 0 0 30px rgba(146, 131, 98, 0.2);
-  position: relative;
-  background-color: var(--paper-cream);
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 auto !important;
+  box-shadow: none !important;
+  background-color: transparent !important;
+}
+
+/* Full width opening curtains */
+.styles-module__WlSJYG__opening-sides {
+  width: 100% !important;
+  max-width: 100% !important;
+  left: 0 !important;
+  transform: none !important;
+}
+
+/* Keep inner content neatly centered and compact (thu gọn vào giữa) */
+.styles-module__WlSJYG__card-banner-inner,
+.styles-module__WlSJYG__card-countdown-inner,
+.styles-module__WlSJYG__card-info-inner,
+.styles-module__WlSJYG__card-love-story-inner,
+.love-story-milestones,
+.styles-module__WlSJYG__card-gallery,
+.styles-module__WlSJYG__calendar-inner,
+.styles-module__WlSJYG__timeline-inner,
+.styles-module__WlSJYG__comments-section .styles-module__WlSJYG__inner,
+.styles-module__WlSJYG__rsvp-inner,
+.styles-module__WlSJYG__gift-section .styles-module__WlSJYG__inner,
+.styles-module__WlSJYG__footer-content {
+  max-width: 500px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Full-width banners */
+.styles-module__WlSJYG__hero-section {
+  background-size: cover !important;
+  background-position: center 30% !important;
+  width: 100% !important;
+}
+
+.styles-module__WlSJYG__save-date-section {
+  background-size: cover !important;
+  background-position: center !important;
+  width: 100% !important;
+}
+
+.styles-module__WlSJYG__timeline-section {
+  background-size: cover !important;
+  background-position: center !important;
+  width: 100% !important;
+}
+
+.styles-module__WlSJYG__app-footer {
+  width: 100% !important;
+}
+
+.styles-module__WlSJYG__app-footer img {
+  object-fit: cover !important;
+}
+
+/* Decorative overlays centered */
+.styles-module__WlSJYG__card-countdown:before,
+.styles-module__WlSJYG__card-info:before {
+  background-position: center top !important;
+}
+
+.styles-module__WlSJYG__card-comments:after {
+  background-position: center bottom !important;
 }
 
 /* Floating Audio Control */
