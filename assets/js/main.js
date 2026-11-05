@@ -4,6 +4,9 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
+  // 0. Interactive 3D Envelope Opening Experience
+  initEnvelope();
+
   // 1. URL Parameter Guest Personalization
   initGuestName();
 
@@ -37,6 +40,112 @@ document.addEventListener('DOMContentLoaded', () => {
   // 11. Handle Curtain Opening Sides Fadeout
   initCurtains();
 });
+
+/* ==========================================================
+   0. INTERACTIVE 3D ENVELOPE OPENING EXPERIENCE
+   ========================================================== */
+function initEnvelope() {
+  const envelopeScreen = document.getElementById('envelopeScreen');
+  const envelopeCard = document.getElementById('envelopeCard');
+  const openBtn = document.getElementById('openInvitationBtn');
+  const waxSeal = document.getElementById('waxSeal');
+  const envelopeFlap = document.getElementById('envelopeFlap');
+  const envelopeLetter = document.getElementById('envelopeLetter');
+  const envelopeGuestName = document.getElementById('envelopeGuestName');
+
+  if (!envelopeScreen) return;
+
+  // Sync guest name from URL parameter (?to= or ?guest=)
+  const urlParams = new URLSearchParams(window.location.search);
+  const guestName = urlParams.get('to') || urlParams.get('guest');
+  if (guestName && envelopeGuestName) {
+    envelopeGuestName.textContent = decodeURIComponent(guestName).trim();
+  }
+
+  let isOpening = false;
+
+  function handleOpenEnvelope(e) {
+    if (e) e.stopPropagation();
+    if (isOpening) return;
+    isOpening = true;
+
+    // 1. Play wedding audio immediately upon direct user gesture
+    playAudio();
+
+    // 2. Break wax seal with pop & golden fade
+    if (waxSeal) {
+      waxSeal.classList.add('broken');
+    }
+
+    // 3. Open top flap with 3D rotation
+    setTimeout(() => {
+      if (envelopeFlap) envelopeFlap.classList.add('opened');
+    }, 120);
+
+    // 4. Slide letter up from inside envelope
+    setTimeout(() => {
+      if (envelopeLetter) envelopeLetter.classList.add('slide-up');
+    }, 380);
+
+    // 5. Trigger celebratory confetti burst
+    triggerConfettiBurst();
+
+    // 6. Smoothly fade out envelope screen to reveal main invitation
+    setTimeout(() => {
+      envelopeScreen.classList.add('opened');
+    }, 850);
+
+    // 7. Hide completely to allow full page scrolling and interaction
+    setTimeout(() => {
+      envelopeScreen.style.display = 'none';
+    }, 1600);
+  }
+
+  if (openBtn) openBtn.addEventListener('click', handleOpenEnvelope);
+  if (waxSeal) waxSeal.addEventListener('click', handleOpenEnvelope);
+  if (envelopeCard) envelopeCard.addEventListener('click', handleOpenEnvelope);
+}
+
+function triggerConfettiBurst() {
+  const colors = ['#8F1D2C', '#D4AF37', '#b6a77f', '#F3D2C1', '#ffffff', '#FF758F'];
+  const burstCount = 42;
+
+  for (let i = 0; i < burstCount; i++) {
+    const el = document.createElement('div');
+    el.className = 'envelope-confetti';
+    const bg = colors[Math.floor(Math.random() * colors.length)];
+    const size = Math.random() * 8 + 6;
+    const isCircle = Math.random() > 0.45;
+
+    el.style.cssText = `
+      position: fixed;
+      left: 50%;
+      top: 50%;
+      width: ${size}px;
+      height: ${size * (isCircle ? 1 : 1.7)}px;
+      background: ${bg};
+      border-radius: ${isCircle ? '50%' : '2px'};
+      pointer-events: none;
+      z-index: 10001;
+      opacity: 1;
+      transform: translate(-50%, -50%) rotate(${Math.random() * 360}deg);
+      transition: transform 1.25s cubic-bezier(0.12, 0.8, 0.32, 1), opacity 1.25s ease-out;
+    `;
+    document.body.appendChild(el);
+
+    const angle = Math.random() * Math.PI * 2;
+    const distance = Math.random() * 280 + 90;
+    const destX = Math.cos(angle) * distance;
+    const destY = Math.sin(angle) * distance + (Math.random() * 60 + 25);
+
+    requestAnimationFrame(() => {
+      el.style.transform = `translate(calc(-50% + ${destX}px), calc(-50% + ${destY}px)) rotate(${Math.random() * 720}deg) scale(${Math.random() * 0.5 + 0.5})`;
+      el.style.opacity = '0';
+    });
+
+    setTimeout(() => el.remove(), 1450);
+  }
+}
 
 /* ==========================================================
    1. GUEST NAME PERSONALIZATION (?to=Tên_Khách)

@@ -17,12 +17,53 @@
   <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Lora:ital,wght@0,400..700;1,400..700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
 
   <!-- Stylesheets -->
-  <link rel="stylesheet" href="assets/css/globals.css" />
-  <link rel="stylesheet" href="assets/css/graceful-04.css" />
-  <link rel="stylesheet" href="assets/css/custom.css" />
+  <link rel="stylesheet" href="assets/css/globals.css?v=3.0" />
+  <link rel="stylesheet" href="assets/css/graceful-04.css?v=3.0" />
+  <link rel="stylesheet" href="assets/css/custom.css?v=3.0" />
 </head>
 <body class="site-module__FW66Kq__inter antialiased bg-background text-foreground overflow-x-hidden">
   
+  <!-- 3D Interactive Wedding Envelope Screen -->
+  <div id="envelopeScreen" class="envelope-screen">
+    <div class="envelope-wrapper">
+      <div class="envelope-header">
+        <p class="envelope-eyebrow">WEDDING INVITATION</p>
+        <h2 class="envelope-couple-names">Trọng Tiến &amp; Thu Hương</h2>
+      </div>
+
+      <div class="envelope-card-3d" id="envelopeCard" title="Nhấn vào phong bì để mở thiệp">
+        <div class="envelope-back"></div>
+        <div class="envelope-letter" id="envelopeLetter">
+          <div class="letter-monogram">T &amp; H</div>
+          <p class="letter-save-date">Save the Date</p>
+          <p class="letter-date">07.03.2027</p>
+        </div>
+        <div class="envelope-front-pocket">
+          <div class="envelope-pocket-left"></div>
+          <div class="envelope-pocket-right"></div>
+          <div class="envelope-pocket-bottom"></div>
+        </div>
+        <div class="envelope-guest-badge">
+          <span class="guest-label">Trân trọng kính mời</span>
+          <strong class="guest-name-display" id="envelopeGuestName">Quý vị &amp; Gia đình</strong>
+        </div>
+        <div class="envelope-flap" id="envelopeFlap"></div>
+        <div class="wax-seal" id="waxSeal" title="Chạm mở thiệp">
+          <div class="wax-seal-inner"><span>T&amp;H</span></div>
+          <div class="wax-seal-pulse"></div>
+        </div>
+      </div>
+
+      <div class="envelope-action">
+        <button id="openInvitationBtn" type="button" class="open-invitation-btn">
+          <span class="btn-icon">💌</span>
+          <span class="btn-text">Chạm để mở thiệp</span>
+        </button>
+        <p class="envelope-hint">Nhạc nền sẽ tự động phát khi mở thiệp</p>
+      </div>
+    </div>
+  </div>
+
   <!-- Canvas Particles for Falling Rose Petals & Gold Dust -->
   <canvas id="particle-canvas"></canvas>
 
@@ -201,6 +242,6 @@ cùng gia đình chúng tôi</div></div><div class="styles-module__WlSJYG__revea
   </div>
 
   <!-- Interactive JavaScript Engine -->
-  <script src="assets/js/main.js"></script>
+  <script src="assets/js/main.js?v=3.0"></script>
 </body>
 </html>

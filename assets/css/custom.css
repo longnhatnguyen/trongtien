@@ -40,21 +40,27 @@ body {
   z-index: 40;
 }
 
-/* Remove side gutters / black borders & make container full-width */
+/* Card wrapper: 100% on mobile, compact centered card on desktop with warm ivory surrounding */
 .styles-module__WlSJYG__card-wrapper {
   width: 100% !important;
-  max-width: 100% !important;
+  max-width: 480px !important;
   margin: 0 auto !important;
-  box-shadow: none !important;
-  background-color: transparent !important;
+  background-color: var(--paper, #fff8ed) !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(182, 167, 127, 0.18) !important;
+  overflow: hidden !important;
 }
 
-/* Full width opening curtains */
+@media (min-width: 768px) {
+  .styles-module__WlSJYG__card-wrapper {
+    margin: 36px auto !important;
+    border-radius: 14px !important;
+    box-shadow: 0 24px 60px rgba(146, 131, 98, 0.22), 0 0 0 1px rgba(182, 167, 127, 0.35) !important;
+  }
+}
+
+/* Hide old sliding curtains in favor of interactive 3D envelope */
 .styles-module__WlSJYG__opening-sides {
-  width: 100% !important;
-  max-width: 100% !important;
-  left: 0 !important;
-  transform: none !important;
+  display: none !important;
 }
 
 /* Keep inner content neatly centered and compact (thu gọn vào giữa) */
@@ -112,6 +118,368 @@ body {
 
 .styles-module__WlSJYG__card-comments:after {
   background-position: center bottom !important;
+}
+
+/* ==========================================================
+   INTERACTIVE 3D ENVELOPE OPENING EXPERIENCE
+   ========================================================== */
+.envelope-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #1a1614;
+  background-image: 
+    radial-gradient(circle at 50% 35%, rgba(182, 167, 127, 0.28) 0%, transparent 65%),
+    linear-gradient(180deg, #141110 0%, #241e1a 100%);
+  overflow: hidden;
+  transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1), transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.envelope-screen.opened {
+  opacity: 0;
+  transform: scale(1.08) translateY(-20px);
+  pointer-events: none;
+}
+
+.envelope-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  width: 100%;
+  max-width: 440px;
+  perspective: 1000px;
+}
+
+.envelope-header {
+  text-align: center;
+  margin-bottom: 24px;
+  animation: fadeInDown 1s ease forwards;
+}
+
+.envelope-eyebrow {
+  color: #b6a77f;
+  font-size: 13px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  margin: 0 0 6px;
+  font-weight: 500;
+}
+
+.envelope-couple-names {
+  font-family: var(--font-great-vibes);
+  font-size: clamp(2.4rem, 8vw, 3.2rem);
+  color: #fff8ed;
+  margin: 0;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+  line-height: 1.1;
+}
+
+/* Envelope Card 3D Box */
+.envelope-card-3d {
+  position: relative;
+  width: 320px;
+  height: 210px;
+  background: #FFFDF9;
+  border-radius: 8px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5), 0 0 30px rgba(182, 167, 127, 0.25);
+  cursor: pointer;
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform-style: preserve-3d;
+}
+
+.envelope-card-3d:hover {
+  transform: translateY(-6px) scale(1.02);
+}
+
+/* Back of Envelope */
+.envelope-back {
+  position: absolute;
+  inset: 0;
+  background: #F4EAD9;
+  border-radius: 8px;
+  border: 1px solid rgba(182, 167, 127, 0.35);
+  z-index: 1;
+}
+
+/* Letter sneaking out */
+.envelope-letter {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  right: 15px;
+  height: 180px;
+  background: #FFFDF8;
+  border: 1px solid rgba(182, 167, 127, 0.4);
+  border-radius: 6px;
+  z-index: 2;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  text-align: center;
+  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.envelope-letter.slide-up {
+  transform: translateY(-90px);
+}
+
+.letter-monogram {
+  font-family: var(--font-g4-lora);
+  font-size: 24px;
+  color: #928362;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  border-bottom: 1px solid #b6a77f;
+  padding-bottom: 4px;
+  margin-bottom: 6px;
+}
+
+.letter-save-date {
+  font-family: var(--font-great-vibes);
+  font-size: 26px;
+  color: #8F1D2C;
+  margin: 0;
+}
+
+.letter-date {
+  font-size: 13px;
+  color: #7f704f;
+  letter-spacing: 0.15em;
+  margin: 4px 0 0;
+}
+
+/* Front Pocket of Envelope */
+.envelope-front-pocket {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.envelope-pocket-bottom {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 160px 125px 160px;
+  border-color: transparent transparent #EFE3D0 transparent;
+  filter: drop-shadow(0 -3px 6px rgba(0, 0, 0, 0.06));
+}
+
+.envelope-pocket-left {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  border-style: solid;
+  border-width: 105px 0 105px 160px;
+  border-color: transparent transparent transparent #E8DCBE;
+  opacity: 0.8;
+}
+
+.envelope-pocket-right {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 0;
+  border-style: solid;
+  border-width: 105px 160px 105px 0;
+  border-color: transparent #E8DCBE transparent transparent;
+  opacity: 0.8;
+}
+
+/* Guest Name Badge */
+.envelope-guest-badge {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  background: #FFFDF9;
+  border: 1px solid #b6a77f;
+  border-radius: 6px;
+  padding: 8px 18px;
+  text-align: center;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+  min-width: 190px;
+}
+
+.guest-label {
+  display: block;
+  font-size: 10.5px;
+  color: #7f704f;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+.guest-name-display {
+  font-family: var(--font-g4-lora);
+  font-size: 14px;
+  color: #8F1D2C;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Flap (Nắp phong bì lật 3D) */
+.envelope-flap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 120px 160px 0 160px;
+  border-color: #E2D3B3 transparent transparent transparent;
+  transform-origin: top center;
+  transform: rotateX(0deg);
+  transition: transform 0.65s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 4;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.12));
+}
+
+.envelope-flap.opened {
+  transform: rotateX(180deg);
+  z-index: 1;
+}
+
+/* Wax Seal */
+.wax-seal {
+  position: absolute;
+  top: 105px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #D4AF37, #8F1D2C 80%);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35), inset 0 0 0 2px rgba(255, 255, 255, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 6;
+  cursor: pointer;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+}
+
+.wax-seal:hover {
+  transform: translate(-50%, -50%) scale(1.12);
+}
+
+.wax-seal.broken {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(1.4);
+}
+
+.wax-seal-inner {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1.5px dashed rgba(255, 255, 255, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-family: var(--font-g4-lora);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.wax-seal-pulse {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(212, 175, 55, 0.6);
+  animation: sealPulse 2s cubic-bezier(0.24, 0, 0.38, 1) infinite;
+  pointer-events: none;
+}
+
+@keyframes sealPulse {
+  0% { transform: scale(0.95); opacity: 0.8; }
+  50% { transform: scale(1.2); opacity: 0; }
+  100% { transform: scale(1.2); opacity: 0; }
+}
+
+/* Open Button */
+.envelope-action {
+  margin-top: 36px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: fadeInUp 1s 0.3s ease both;
+}
+
+.open-invitation-btn {
+  background: linear-gradient(135deg, #b6a77f 0%, #8F1D2C 100%);
+  color: #fff;
+  border: none;
+  padding: 14px 34px;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(143, 29, 44, 0.4), 0 0 15px rgba(182, 167, 127, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.open-invitation-btn:hover {
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 12px 30px rgba(143, 29, 44, 0.55), 0 0 25px rgba(182, 167, 127, 0.5);
+}
+
+.open-invitation-btn .btn-icon {
+  font-size: 18px;
+  animation: bounceSlow 2s infinite ease-in-out;
+}
+
+@keyframes bounceSlow {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+.envelope-hint {
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 12px;
+  margin-top: 10px;
+  letter-spacing: 0.02em;
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 360px) {
+  .envelope-card-3d {
+    transform: scale(0.9);
+  }
+  .envelope-card-3d:hover {
+    transform: scale(0.92);
+  }
 }
 
 /* Floating Audio Control */
