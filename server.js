@@ -20,6 +20,38 @@ const MIME_TYPES = {
 
 const server = http.createServer((req, res) => {
   let reqUrl = req.url.split('?')[0];
+
+  // API lưu xác nhận RSVP và Lời chúc vào file text
+  if (req.method === 'POST' && (reqUrl === '/api/rsvp' || reqUrl === '/api/wish')) {
+    let body = '';
+    req.on('data', chunk => { body += chunk; });
+    req.on('end', () => {
+      try {
+        const data = JSON.parse(body);
+        const timeStr = new Date().toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' });
+        
+        if (reqUrl === '/api/rsvp') {
+          const targetFile = path.join(__dirname, 'danh_sach_rsvp.txt');
+          const prefix = !fs.existsSync(targetFile) ? '\uFEFF' : '';
+          const line = `${prefix}[${timeStr}] Tên: ${data.name || 'Khách'} | Tham dự: ${data.attending === 'yes' ? 'Sẽ đến' : 'Bận'} | Phe: ${data.side || 'Khách'} | Số người: ${data.guestCount || 1}\r\n`;
+          fs.appendFileSync(targetFile, line, 'utf8');
+        } else {
+          const targetFile = path.join(__dirname, 'danh_sach_loi_chuc.txt');
+          const prefix = !fs.existsSync(targetFile) ? '\uFEFF' : '';
+          const line = `${prefix}[${timeStr}] Tên: ${data.name || 'Khách'} | Phe: ${data.side || 'Khách'} | Lời chúc: "${data.message || ''}"\r\n`;
+          fs.appendFileSync(targetFile, line, 'utf8');
+        }
+
+        res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+        res.end(JSON.stringify({ success: true, message: 'Đã lưu vào file text thành công' }));
+      } catch (err) {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: false, error: err.message }));
+      }
+    });
+    return;
+  }
+
   let filePath = path.join(__dirname, reqUrl === '/' ? 'index.html' : reqUrl);
 
   const ext = path.extname(filePath).toLowerCase();

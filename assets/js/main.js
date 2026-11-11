@@ -611,6 +611,15 @@ function initGuestbook() {
       localStorage.setItem('wedding_wishes', JSON.stringify(savedWishes));
       renderWishes();
 
+      // Gửi lưu file text vào server backend nếu có
+      try {
+        fetch('/api/wish', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(newWish)
+        }).catch(() => {});
+      } catch (err) {}
+
       guestbookModal.classList.remove('active');
       document.body.style.overflow = '';
       nameInput.value = '';
@@ -680,6 +689,15 @@ function initRSVP() {
 
       const rsvpData = { name, attending, side, guestCount, date: new Date().toISOString() };
       localStorage.setItem('wedding_rsvp', JSON.stringify(rsvpData));
+
+      // Gửi lưu file text vào server backend nếu có
+      try {
+        fetch('/api/rsvp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(rsvpData)
+        }).catch(() => {});
+      } catch (err) {}
 
       if (attending === 'yes') {
         showToast(`🎉 Cảm ơn ${name}! Rất hân hạnh được đón tiếp bạn và gia đình!`);
