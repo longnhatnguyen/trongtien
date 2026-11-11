@@ -16,14 +16,14 @@
    - Tự động bắt đầu ngay từ giây thứ 7 (vào thẳng điệp khúc).
    - Đĩa than quay 33 RPM kèm hiệu ứng sóng âm (soundwaves) nhảy múa, có nút toggle bật/tắt nổi.
 4. ⏳ **Bộ đếm ngược thời gian thực (Countdown Timer)**:
-   - Đếm ngược chính xác Ngày - Giờ - Phút - Giây đến hôn lễ ngày **07.03.2027**.
+   - Đếm ngược chính xác Ngày - Giờ - Phút - Giây đến hôn lễ ngày **28.11.2026** (16:00).
    - Logo Monogram tên viết tắt lồng ghép nghệ thuật: **T & H** (*Tiến & Hương*).
 5. 💒 **Chuyển đổi Lịch trình Nhà Trai / Nhà Gái (Side Switcher)**:
-   - **Nhà gái (Thu Hương)**: Lễ Vu Quy (07:00 - 07.03.2027) & Tiệc Cưới (17:00 - 06.03.2026) tại *Khoái Châu, Hưng Yên*.
-   - **Nhà trai (Trọng Tiến)**: Lễ Thành Hôn (10:00 - 07.03.2027) & Tiệc Cưới (18:00 - 06.03.2026) tại *Đại Thanh, Hà Nội*.
+   - **Nhà gái (Thu Hương)**: Lễ Thành Hôn - Bữa Cơm Thân Mật (16:00 - Thứ Bảy, 28.11.2026 / 20.10 Bính Ngọ) tại *Thôn Cam Giá, xã Vĩnh Phú, tỉnh Phú Thọ*.
+   - **Nhà trai (Trọng Tiến)**: Lễ Thành Hôn - Bữa Cơm Thân Mật (16:00 - Thứ Bảy, 28.11.2026 / 20.10 Bính Ngọ) tại *Thôn Phương Man, xã Đông Thụy Anh, tỉnh Hưng Yên*.
    - Nút dẫn đường trực tiếp Google Maps tương ứng từng vị trí.
 6. 📖 **Chuyện tình yêu (Love Story Timeline)**:
-   - 5 mốc thời gian đáng nhớ của Tiến & Hương: *Gặp nhau (2022)*, *Lời tỏ tình (Thu 2023)*, *Những ngày yêu nhau (2024–2025)*, *Lời cầu hôn (12/2025)*, và *Ngày chung đôi (07.03.2027)*.
+   - 5 mốc thời gian đáng nhớ của Tiến & Hương: *Gặp nhau (2022)*, *Lời tỏ tình (Thu 2023)*, *Những ngày yêu nhau (2024–2025)*, *Lời cầu hôn (12/2025)*, và *Ngày chung đôi (28.11.2026)*.
 7. 🎞️ **Bộ ảnh cưới mới & Cuộn phim nghệ thuật (Film Roll & Lightbox)**:
    - Bộ ảnh cưới mới độ phân giải cao mang phong cách sang trọng, hiện đại.
    - Click vào bất kỳ bức ảnh nào trong lưới ảnh hoặc cuộn phim để mở **Lightbox phóng to toàn màn hình** (hỗ trợ phím Mũi tên trái/phải, nút Next/Prev và phím ESC).

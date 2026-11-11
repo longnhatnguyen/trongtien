@@ -232,7 +232,7 @@ function toggleAudio() {
    ========================================================== */
 function initCountdown() {
   // Target: March 7, 2027 07:00:00 GMT+7
-  const weddingDate = new Date('2027-03-07T07:00:00+07:00').getTime();
+  const weddingDate = new Date('2026-11-28T16:00:00+07:00').getTime();
   const digitValues = document.querySelectorAll('.styles-module__WlSJYG__countdown-piece .styles-module__WlSJYG__value');
 
   function update() {
@@ -277,37 +277,20 @@ function initSideSwitcher() {
   const eventsData = {
     bride: `
       <div data-event-style="standard" class="styles-module__WlSJYG__invitation-event-block">
-        <div class="styles-module__WlSJYG__reveal reveal-fade-up text styles-module__WlSJYG__event-title styles-module__WlSJYG__is-visible">Lễ Vu Quy</div>
+        <div class="styles-module__WlSJYG__reveal reveal-fade-up text styles-module__WlSJYG__event-title styles-module__WlSJYG__is-visible">Lễ Thành Hôn</div>
+        <div class="styles-module__WlSJYG__reveal reveal-fade-up text styles-module__WlSJYG__is-visible" style="font-family: var(--font-g4-lora, serif); font-size: 16px; font-weight: 600; color: #8C5B66; margin-top: 4px; text-align: center; letter-spacing: 0.5px;">Bữa Cơm Thân Mật</div>
         <div class="styles-module__WlSJYG__date-and-time">
           <div class="styles-module__WlSJYG__date-and-time-inner">
-            <div class="styles-module__WlSJYG__reveal styles-module__WlSJYG__reveal-soft-scale styles-module__WlSJYG__time styles-module__WlSJYG__is-visible">07:00 - Chủ Nhật</div>
-            <div class="styles-module__WlSJYG__reveal styles-module__WlSJYG__reveal-soft-scale styles-module__WlSJYG__date styles-module__WlSJYG__is-visible">07.03.2027</div>
+            <div class="styles-module__WlSJYG__reveal styles-module__WlSJYG__reveal-soft-scale styles-module__WlSJYG__time styles-module__WlSJYG__is-visible">16:00 - Thứ Bảy</div>
+            <div class="styles-module__WlSJYG__reveal styles-module__WlSJYG__reveal-soft-scale styles-module__WlSJYG__date styles-module__WlSJYG__is-visible">28.11.2026</div>
           </div>
-          <div class="styles-module__WlSJYG__reveal reveal-fade-up styles-module__WlSJYG__lunar-date styles-module__WlSJYG__is-visible">(Nhằm ngày 30 tháng 1 năm Đinh Mùi)</div>
+          <div class="styles-module__WlSJYG__reveal reveal-fade-up styles-module__WlSJYG__lunar-date styles-module__WlSJYG__is-visible">(Tức ngày 20 tháng 10 năm Bính Ngọ)</div>
         </div>
         <div class="styles-module__WlSJYG__reveal reveal-fade-up text styles-module__WlSJYG__venue-label styles-module__WlSJYG__is-visible">Địa điểm:</div>
         <div class="styles-module__WlSJYG__reveal reveal-fade-up styles-module__WlSJYG__hotel styles-module__WlSJYG__is-visible">Tư gia Nhà gái</div>
-        <div class="styles-module__WlSJYG__reveal reveal-fade-up styles-module__WlSJYG__address styles-module__WlSJYG__is-visible">Xóm 22, Khoái Châu, Hưng Yên</div>
+        <div class="styles-module__WlSJYG__reveal reveal-fade-up styles-module__WlSJYG__address styles-module__WlSJYG__is-visible">Thôn Cam Giá, xã Vĩnh Phú, tỉnh Phú Thọ</div>
         <div class="styles-module__WlSJYG__reveal reveal-fade-up styles-module__WlSJYG__is-visible" style="margin-top: 10px;">
-          <a class="styles-module__WlSJYG__location-button" href="https://www.google.com/maps/search/?api=1&query=20.828440954639305,105.9531193971634" target="_blank" rel="noreferrer">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" class="lucide lucide-map-pin"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg> Chỉ đường
-          </a>
-        </div>
-      </div>
-      <div data-event-style="standard" class="styles-module__WlSJYG__invitation-event-block" style="margin-top: 24px;">
-        <div class="styles-module__WlSJYG__reveal reveal-fade-up text styles-module__WlSJYG__event-title styles-module__WlSJYG__is-visible">Tiệc Cưới Nhà Gái</div>
-        <div class="styles-module__WlSJYG__date-and-time">
-          <div class="styles-module__WlSJYG__date-and-time-inner">
-            <div class="styles-module__WlSJYG__reveal styles-module__WlSJYG__reveal-soft-scale styles-module__WlSJYG__time styles-module__WlSJYG__is-visible">17:00 - Thứ Sáu</div>
-            <div class="styles-module__WlSJYG__reveal styles-module__WlSJYG__reveal-soft-scale styles-module__WlSJYG__date styles-module__WlSJYG__is-visible">06.03.2026</div>
-          </div>
-          <div class="styles-module__WlSJYG__reveal reveal-fade-up styles-module__WlSJYG__lunar-date styles-module__WlSJYG__is-visible">(Nhằm ngày 18 tháng 1 năm Bính Ngọ)</div>
-        </div>
-        <div class="styles-module__WlSJYG__reveal reveal-fade-up text styles-module__WlSJYG__venue-label styles-module__WlSJYG__is-visible">Địa điểm:</div>
-        <div class="styles-module__WlSJYG__reveal reveal-fade-up styles-module__WlSJYG__hotel styles-module__WlSJYG__is-visible">Xóm 22</div>
-        <div class="styles-module__WlSJYG__reveal reveal-fade-up styles-module__WlSJYG__address styles-module__WlSJYG__is-visible">Khoái Châu, Hưng Yên</div>
-        <div class="styles-module__WlSJYG__reveal reveal-fade-up styles-module__WlSJYG__is-visible" style="margin-top: 10px;">
-          <a class="styles-module__WlSJYG__location-button" href="https://www.google.com/maps/search/?api=1&query=20.828461010035973,105.9531193971634" target="_blank" rel="noreferrer">
+          <a class="styles-module__WlSJYG__location-button" href="https://www.google.com/maps/search/?api=1&query=Th%C3%B4n+Cam+Gi%C3%A1%2C+x%C3%A3+V%C4%A9nh+Ph%C3%BA%2C+t%E1%BB%89nh+Ph%C3%BA+Th%E1%BB%8D" target="_blank" rel="noreferrer">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" class="lucide lucide-map-pin"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg> Chỉ đường
           </a>
         </div>
@@ -316,36 +299,19 @@ function initSideSwitcher() {
     groom: `
       <div data-event-style="standard" class="styles-module__WlSJYG__invitation-event-block">
         <div class="styles-module__WlSJYG__reveal reveal-fade-up text styles-module__WlSJYG__event-title styles-module__WlSJYG__is-visible">Lễ Thành Hôn</div>
+        <div class="styles-module__WlSJYG__reveal reveal-fade-up text styles-module__WlSJYG__is-visible" style="font-family: var(--font-g4-lora, serif); font-size: 16px; font-weight: 600; color: #8C5B66; margin-top: 4px; text-align: center; letter-spacing: 0.5px;">Bữa Cơm Thân Mật</div>
         <div class="styles-module__WlSJYG__date-and-time">
           <div class="styles-module__WlSJYG__date-and-time-inner">
-            <div class="styles-module__WlSJYG__reveal styles-module__WlSJYG__reveal-soft-scale styles-module__WlSJYG__time styles-module__WlSJYG__is-visible">10:00 - Chủ Nhật</div>
-            <div class="styles-module__WlSJYG__reveal styles-module__WlSJYG__reveal-soft-scale styles-module__WlSJYG__date styles-module__WlSJYG__is-visible">07.03.2027</div>
+            <div class="styles-module__WlSJYG__reveal styles-module__WlSJYG__reveal-soft-scale styles-module__WlSJYG__time styles-module__WlSJYG__is-visible">16:00 - Thứ Bảy</div>
+            <div class="styles-module__WlSJYG__reveal styles-module__WlSJYG__reveal-soft-scale styles-module__WlSJYG__date styles-module__WlSJYG__is-visible">28.11.2026</div>
           </div>
-          <div class="styles-module__WlSJYG__reveal reveal-fade-up styles-module__WlSJYG__lunar-date styles-module__WlSJYG__is-visible">(Nhằm ngày 30 tháng 1 năm Đinh Mùi)</div>
+          <div class="styles-module__WlSJYG__reveal reveal-fade-up styles-module__WlSJYG__lunar-date styles-module__WlSJYG__is-visible">(Tức ngày 20 tháng 10 năm Bính Ngọ)</div>
         </div>
         <div class="styles-module__WlSJYG__reveal reveal-fade-up text styles-module__WlSJYG__venue-label styles-module__WlSJYG__is-visible">Địa điểm:</div>
         <div class="styles-module__WlSJYG__reveal reveal-fade-up styles-module__WlSJYG__hotel styles-module__WlSJYG__is-visible">Tư gia Nhà trai</div>
-        <div class="styles-module__WlSJYG__reveal reveal-fade-up styles-module__WlSJYG__address styles-module__WlSJYG__is-visible">Số nhà 5, Ngõ 56, Siêu Quần, Đại Thanh, Hà Nội</div>
+        <div class="styles-module__WlSJYG__reveal reveal-fade-up styles-module__WlSJYG__address styles-module__WlSJYG__is-visible">Thôn Phương Man, xã Đông Thụy Anh, tỉnh Hưng Yên</div>
         <div class="styles-module__WlSJYG__reveal reveal-fade-up styles-module__WlSJYG__is-visible" style="margin-top: 10px;">
-          <a class="styles-module__WlSJYG__location-button" href="https://www.google.com/maps/search/?api=1&query=20.913905305657302,105.80751836299896" target="_blank" rel="noreferrer">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" class="lucide lucide-map-pin"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg> Chỉ đường
-          </a>
-        </div>
-      </div>
-      <div data-event-style="standard" class="styles-module__WlSJYG__invitation-event-block" style="margin-top: 24px;">
-        <div class="styles-module__WlSJYG__reveal reveal-fade-up text styles-module__WlSJYG__event-title styles-module__WlSJYG__is-visible">Tiệc Cưới Nhà Trai</div>
-        <div class="styles-module__WlSJYG__date-and-time">
-          <div class="styles-module__WlSJYG__date-and-time-inner">
-            <div class="styles-module__WlSJYG__reveal styles-module__WlSJYG__reveal-soft-scale styles-module__WlSJYG__time styles-module__WlSJYG__is-visible">18:00 - Thứ Sáu</div>
-            <div class="styles-module__WlSJYG__reveal styles-module__WlSJYG__reveal-soft-scale styles-module__WlSJYG__date styles-module__WlSJYG__is-visible">06.03.2026</div>
-          </div>
-          <div class="styles-module__WlSJYG__reveal reveal-fade-up styles-module__WlSJYG__lunar-date styles-module__WlSJYG__is-visible">(Nhằm ngày 18 tháng 1 năm Bính Ngọ)</div>
-        </div>
-        <div class="styles-module__WlSJYG__reveal reveal-fade-up text styles-module__WlSJYG__venue-label styles-module__WlSJYG__is-visible">Địa điểm:</div>
-        <div class="styles-module__WlSJYG__reveal reveal-fade-up styles-module__WlSJYG__hotel styles-module__WlSJYG__is-visible">Số nhà 5, Ngõ 56</div>
-        <div class="styles-module__WlSJYG__reveal reveal-fade-up styles-module__WlSJYG__address styles-module__WlSJYG__is-visible">Siêu Quần, Đại Thanh, Hà Nội</div>
-        <div class="styles-module__WlSJYG__reveal reveal-fade-up styles-module__WlSJYG__is-visible" style="margin-top: 10px;">
-          <a class="styles-module__WlSJYG__location-button" href="https://www.google.com/maps/search/?api=1&query=20.913905305657302,105.80751836299896" target="_blank" rel="noreferrer">
+          <a class="styles-module__WlSJYG__location-button" href="https://www.google.com/maps/search/?api=1&query=Th%C3%B4n+Ph%C6%B0%C6%A1ng+Man%2C+x%C3%A3+%C4%90%C3%B4ng+Th%E1%BB%A5y+Anh%2C+t%E1%BB%89nh+H%C6%B0ng+Y%C3%AAn" target="_blank" rel="noreferrer">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" class="lucide lucide-map-pin"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg> Chỉ đường
           </a>
         </div>
@@ -353,15 +319,33 @@ function initSideSwitcher() {
     `
   };
 
+  function setSide(isGroom) {
+    switchBtns.forEach(b => {
+      const match = isGroom ? b.textContent.includes('Nhà trai') : b.textContent.includes('Nhà gái');
+      b.classList.toggle('styles-module__WlSJYG__active', match);
+    });
+    eventContainer.innerHTML = isGroom ? eventsData.groom : eventsData.bride;
+  }
+
   switchBtns.forEach(btn => {
     btn.addEventListener('click', () => {
-      switchBtns.forEach(b => b.classList.remove('styles-module__WlSJYG__active'));
-      btn.classList.add('styles-module__WlSJYG__active');
       const isGroom = btn.textContent.includes('Nhà trai');
-      eventContainer.innerHTML = isGroom ? eventsData.groom : eventsData.bride;
+      setSide(isGroom);
     });
   });
+
+  // Check URL parameter (?side=trai / ?side=gai)
+  const urlParams = new URLSearchParams(window.location.search);
+  const sideParam = urlParams.get('side');
+  if (sideParam) {
+    if (sideParam.toLowerCase().includes('gai') || sideParam.toLowerCase().includes('bride')) {
+      setSide(false);
+    } else if (sideParam.toLowerCase().includes('trai') || sideParam.toLowerCase().includes('groom')) {
+      setSide(true);
+    }
+  }
 }
+
 
 /* ==========================================================
    5. SCROLL REVEAL OBSERVER
