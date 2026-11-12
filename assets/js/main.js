@@ -173,6 +173,24 @@ function initGuestName() {
 }
 
 /* ==========================================================
+   GOOGLE SHEETS STORAGE (works on GitHub Pages, no server)
+   content.json → sheetUrl = Web App URL of google-apps-script.gs
+   ========================================================== */
+function sendToSheet(type, payload) {
+  const url = window.WEDDING && window.WEDDING.sheetUrl;
+  if (!url || !/^https:\/\/script\.google\.com\//.test(url)) return;
+  try {
+    // text/plain + no-cors avoids a CORS preflight that Apps Script cannot answer
+    fetch(url, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ type, ...payload })
+    }).catch(() => {});
+  } catch (err) {}
+}
+
+/* ==========================================================
    2. AUDIO PLAYER
    ========================================================== */
 let audioPlaying = false;
@@ -670,6 +688,7 @@ function initGuestbook() {
       localStorage.setItem('wedding_wishes', JSON.stringify(savedWishes));
       renderWishes();
 
+      sendToSheet('wish', newWish);
       // Gửi lưu file text vào server backend nếu có
       try {
         fetch('/api/wish', {
@@ -749,6 +768,7 @@ function initRSVP() {
       const rsvpData = { name, attending, side, guestCount, date: new Date().toISOString() };
       localStorage.setItem('wedding_rsvp', JSON.stringify(rsvpData));
 
+      sendToSheet('rsvp', rsvpData);
       // Gửi lưu file text vào server backend nếu có
       try {
         fetch('/api/rsvp', {

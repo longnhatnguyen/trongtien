@@ -344,6 +344,10 @@
     });
     root.appendChild(c6);
 
+    const cs = card('Kết nối Google Sheets (lưu lời chúc & xác nhận tham dự)', 'Dán Web App URL của Google Apps Script (bắt đầu bằng https://script.google.com/). Xem hướng dẫn trong GOOGLE_SHEETS.md.');
+    cs.appendChild(grid([field('Web App URL', 'sheetUrl', { full: true, placeholder: 'https://script.google.com/macros/s/.../exec' })]));
+    root.appendChild(cs);
+
     const c7 = card('Lời cảm ơn cuối thiệp');
     c7.appendChild(grid([field('Nội dung', 'thankYou', { area: true, full: true })]));
     root.appendChild(c7);

@@ -121,8 +121,40 @@
     return r.text();
   }
 
+  // Google Sheets mode (works on GitHub Pages): content.json → sheetUrl, read key asked once
+  async function loadFromSheet() {
+    let cfg = null;
+    try { cfg = await (await fetch('content.json?t=' + Date.now(), { cache: 'no-store' })).json(); } catch {}
+    const url = cfg && cfg.sheetUrl;
+    if (!url || !/^https:\/\/script\.google\.com\//.test(url)) return false;
+    // Same GitHub token as admin.html (shared localStorage on this site)
+    let key = ''; try { key = localStorage.getItem('wadmin.token') || ''; } catch {}
+    if (!key) {
+      key = (prompt('Nhập mã truy cập (GitHub token, giống trang Quản trị):') || '').trim();
+      if (!key) return false;
+    }
+    const res = await (await fetch(url + '?token=' + encodeURIComponent(key))).json();
+    if (!res.ok) {
+      try { localStorage.removeItem('wadmin.token'); } catch {}
+      throw new Error(res.error === 'unauthorized' ? 'Token sai, hết hạn hoặc không có quyền ghi repo' : res.error);
+    }
+    try { localStorage.setItem('wadmin.token', key); } catch {}
+    const fmt = r => ({ time: String(r['Thời gian'] || ''), name: String(r['Tên'] || ''), side: String(r['Phe'] || '') });
+    rsvp = res.rsvp.map(r => { const o = fmt(r); o.coming = /đến/i.test(r['Tham dự']); o.count = parseInt(r['Số người'], 10) || 1; o.raw = Object.values(r).join(' '); return o; }).reverse();
+    wishes = res.wishes.map(r => { const o = fmt(r); o.message = String(r['Lời chúc'] || ''); o.raw = Object.values(r).join(' '); return o; }).reverse();
+    $('updated').textContent = 'Google Sheets · cập nhật ' + new Date().toLocaleTimeString('vi-VN');
+    return true;
+  }
+
   async function load() {
     $('note').hidden = true;
+    try {
+      if (await loadFromSheet()) { render(); return; }
+    } catch (e) {
+      $('note').textContent = 'Lỗi đọc Google Sheets: ' + e.message;
+      $('note').hidden = false;
+      render(); return;
+    }
     try {
       const [a, b] = await Promise.all([fetchText('danh_sach_rsvp.txt'), fetchText('danh_sach_loi_chuc.txt')]);
       rsvp = parse(a, 'rsvp').reverse();
@@ -134,7 +166,7 @@
       $('note').hidden = false;
     }
     if (!/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) {
-      $('note').innerHTML = 'Trang này đọc 2 file <b>danh_sach_rsvp.txt</b> và <b>danh_sach_loi_chuc.txt</b> do <code>node server.js</code> ghi ra, nên chỉ có dữ liệu khi mở ở máy chạy server (http://localhost:3000/guests.html). Trên GitHub Pages không có nơi lưu, khách gửi sẽ không được ghi lại.';
+      $('note').innerHTML = 'Chưa kết nối Google Sheets nên trên site thật chưa có dữ liệu. Vào <a href="admin.html">Quản trị</a> → mục <b>Kết nối Google Sheets</b> để dán Web App URL (hướng dẫn trong GOOGLE_SHEETS.md).';
       $('note').hidden = false;
     }
     render();
