@@ -3,7 +3,10 @@
  * Groom: Trọng Tiến · Bride: Thu Hương
  */
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+  // Wait for content.json (edited via admin.html) so every init uses current data
+  if (window.contentReady) await window.contentReady;
+
   // 0. Interactive 3D Envelope Opening Experience
   initEnvelope();
 
@@ -164,7 +167,8 @@ function initGuestName() {
     if (rsvpInput) {
       rsvpInput.value = formatted;
     }
-    document.title = `Thiệp Mời Cưới Trọng Tiến & Thu Hương · Kính mời: ${formatted}`;
+    const W = window.WEDDING || { groomName: 'Trọng Tiến', brideName: 'Thu Hương' };
+    document.title = `Thiệp Mời Cưới ${W.groomName} & ${W.brideName} · Kính mời: ${formatted}`;
   }
 }
 
@@ -180,6 +184,7 @@ function initAudioPlayer() {
   const discBtn = document.getElementById('vinylDiscBtn');
   if (!discBtn) return;
 
+  if (window.WEDDING && window.WEDDING.music) weddingAudio.src = window.WEDDING.music;
   discBtn.addEventListener('click', toggleAudio);
 
   // Play on first user gesture anywhere on screen
@@ -232,7 +237,10 @@ function toggleAudio() {
    ========================================================== */
 function initCountdown() {
   // Target: March 7, 2027 07:00:00 GMT+7
-  const weddingDate = new Date('2026-11-28T16:00:00+07:00').getTime();
+  const dt = (window.WEDDING && window.WEDDING.weddingDateTime) || '2026-11-28T16:00';
+  // Always pin to Vietnam time unless an explicit offset/Z is present
+  const hasTz = /(Z|[+-]\d{2}:?\d{2})$/.test(dt);
+  const weddingDate = new Date(hasTz ? dt : (dt.length === 16 ? dt + ':00' : dt) + '+07:00').getTime();
   const digitValues = document.querySelectorAll('.styles-module__WlSJYG__countdown-piece .styles-module__WlSJYG__value');
 
   function update() {
@@ -290,7 +298,7 @@ function initSideSwitcher() {
         <div class="styles-module__WlSJYG__reveal reveal-fade-up styles-module__WlSJYG__hotel styles-module__WlSJYG__is-visible">Tư gia Nhà gái</div>
         <div class="styles-module__WlSJYG__reveal reveal-fade-up styles-module__WlSJYG__address styles-module__WlSJYG__is-visible">Thôn Cam Giá, xã Vĩnh Phú, tỉnh Phú Thọ</div>
         <div class="styles-module__WlSJYG__reveal reveal-fade-up styles-module__WlSJYG__is-visible" style="margin-top: 10px;">
-          <a class="styles-module__WlSJYG__location-button" href="https://www.google.com/maps/search/?api=1&query=Th%C3%B4n+Cam+Gi%C3%A1%2C+x%C3%A3+V%C4%A9nh+Ph%C3%BA%2C+t%E1%BB%89nh+Ph%C3%BA+Th%E1%BB%8D" target="_blank" rel="noreferrer">
+          <a class="styles-module__WlSJYG__location-button" href="https://maps.app.goo.gl/NpZWA6aTgMxBjgK76" target="_blank" rel="noreferrer">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" class="lucide lucide-map-pin"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg> Chỉ đường
           </a>
         </div>
@@ -311,7 +319,7 @@ function initSideSwitcher() {
         <div class="styles-module__WlSJYG__reveal reveal-fade-up styles-module__WlSJYG__hotel styles-module__WlSJYG__is-visible">Tư gia Nhà trai</div>
         <div class="styles-module__WlSJYG__reveal reveal-fade-up styles-module__WlSJYG__address styles-module__WlSJYG__is-visible">Thôn Phương Man, xã Đông Thụy Anh, tỉnh Hưng Yên</div>
         <div class="styles-module__WlSJYG__reveal reveal-fade-up styles-module__WlSJYG__is-visible" style="margin-top: 10px;">
-          <a class="styles-module__WlSJYG__location-button" href="https://www.google.com/maps/search/?api=1&query=Th%C3%B4n+Ph%C6%B0%C6%A1ng+Man%2C+x%C3%A3+%C4%90%C3%B4ng+Th%E1%BB%A5y+Anh%2C+t%E1%BB%89nh+H%C6%B0ng+Y%C3%AAn" target="_blank" rel="noreferrer">
+          <a class="styles-module__WlSJYG__location-button" href="https://maps.app.goo.gl/QitUxBCeGotGJFvBA" target="_blank" rel="noreferrer">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" class="lucide lucide-map-pin"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg> Chỉ đường
           </a>
         </div>
@@ -325,6 +333,27 @@ function initSideSwitcher() {
       b.classList.toggle('styles-module__WlSJYG__active', match);
     });
     eventContainer.innerHTML = isGroom ? eventsData.groom : eventsData.bride;
+    fillEventFromContent(isGroom ? 'groom' : 'bride');
+  }
+
+  // Override template text with values from content.json (admin-editable)
+  function fillEventFromContent(side) {
+    const ev = window.WEDDING && window.WEDDING.events && window.WEDDING.events[side];
+    if (!ev) return;
+    const set = (sel, val) => {
+      const el = eventContainer.querySelector(sel);
+      if (el && val != null) el.textContent = val;
+    };
+    const p = '.styles-module__WlSJYG__';
+    set(p + 'event-title', ev.title);
+    set(p + 'event-title + div', ev.subtitle);
+    set(p + 'time', ev.time);
+    set(p + 'date', ev.date);
+    set(p + 'lunar-date', ev.lunar);
+    set(p + 'hotel', ev.place);
+    set(p + 'address', ev.address);
+    const link = eventContainer.querySelector(p + 'location-button');
+    if (link && window.safeUrl && window.safeUrl(ev.mapUrl)) link.href = ev.mapUrl;
   }
 
   switchBtns.forEach(btn => {
@@ -343,6 +372,8 @@ function initSideSwitcher() {
     } else if (sideParam.toLowerCase().includes('trai') || sideParam.toLowerCase().includes('groom')) {
       setSide(true);
     }
+  } else if (window.WEDDING) {
+    setSide(true); // re-render default (groom) side with content.json values
   }
 }
 
@@ -394,6 +425,12 @@ function initLightbox() {
     'assets/photos/gallery-7.jpg',
     'assets/photos/gallery-8.jpg'
   ];
+  // Use admin-edited photo paths when available (same order as above)
+  const P = window.WEDDING && window.WEDDING.photos;
+  if (P) {
+    ['galleryTilted1', 'galleryTilted2', 'gallery1', 'gallery2', 'gallery3', 'gallery4',
+     'gallery5', 'gallery6', 'gallery7', 'gallery8'].forEach((k, i) => { if (P[k]) galleryImages[i] = P[k]; });
+  }
 
   let currentIndex = 0;
 
@@ -496,10 +533,11 @@ function initGiftModal() {
 
   // Copy Account Number
   window.copyAccountNumber = function(accNumber) {
+    const safe = escapeHtml(String(accNumber)); // value comes from admin-edited DOM text
     navigator.clipboard.writeText(accNumber).then(() => {
-      showToast(`✨ Đã sao chép số tài khoản: ${accNumber}`);
+      showToast(`✨ Đã sao chép số tài khoản: ${safe}`);
     }).catch(() => {
-      showToast(`STK: ${accNumber}`);
+      showToast(`STK: ${safe}`);
     });
   };
 }

@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Quản trị thiệp cưới</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Playfair+Display:ital,wght@1,500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #faf6f4; --card: #fff; --ink: #2d2326; --muted: #8a7a7e; --line: #ecdfe1;
+    --accent: #b5656f; --accent-ink: #fff; --ok: #3f8a5c; --err: #c0392b;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 "Be Vietnam Pro", system-ui, sans-serif; }
+  header { position: sticky; top: 0; z-index: 10; background: rgba(250,246,244,.92); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+  .bar { max-width: 880px; margin: 0 auto; padding: 12px 16px; display: flex; gap: 12px; align-items: center; }
+  .brand { font-family: "Playfair Display", serif; font-style: italic; font-size: 20px; color: var(--accent); flex: 1; }
+  main { max-width: 880px; margin: 0 auto; padding: 20px 16px 120px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 20px; margin-bottom: 16px; }
+  .card h2 { margin: 0 0 14px; font-size: 16px; }
+  .card h3 { margin: 18px 0 8px; font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px 16px; }
+  label { display: block; font-size: 13px; font-weight: 500; color: var(--muted); }
+  input, textarea { width: 100%; margin-top: 4px; padding: 9px 11px; border: 1px solid var(--line); border-radius: 9px; font: inherit; color: var(--ink); background: #fff; }
+  input:focus, textarea:focus { outline: 2px solid color-mix(in srgb, var(--accent) 35%, transparent); border-color: var(--accent); }
+  textarea { min-height: 84px; resize: vertical; }
+  .full { grid-column: 1 / -1; }
+  .item { border: 1px dashed var(--line); border-radius: 10px; padding: 12px; margin-bottom: 10px; }
+  button { font: inherit; cursor: pointer; border-radius: 9px; border: 1px solid var(--line); background: #fff; padding: 8px 14px; color: var(--ink); }
+  button.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 600; }
+  button:disabled { opacity: .55; cursor: wait; }
+  .photos { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+  .photo { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: #fff; }
+  .photo img { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; background: #f3eaec; }
+  .photo .meta { padding: 8px; font-size: 12px; }
+  .photo .meta b { display: block; font-weight: 600; margin-bottom: 6px; }
+  .photo .new { outline: 3px solid var(--accent); outline-offset: -3px; }
+  .photo button { width: 100%; padding: 6px; font-size: 12px; }
+  .hint { color: var(--muted); font-size: 13px; }
+  .savebar { position: fixed; left: 0; right: 0; bottom: 0; background: #fff; border-top: 1px solid var(--line); }
+  .savebar .bar { justify-content: flex-end; }
+  #status { flex: 1; font-size: 13px; color: var(--muted); }
+  #status.ok { color: var(--ok); } #status.err { color: var(--err); }
+  .login { max-width: 460px; margin: 8vh auto; }
+  .login ol { padding-left: 18px; color: var(--muted); font-size: 13px; }
+  a { color: var(--accent); }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<header><div class="bar">
+  <div class="brand">Quản trị thiệp cưới</div>
+  <a id="viewSite" href="./" target="_blank">Xem thiệp ↗</a>
+  <button id="logoutBtn" hidden>Đăng xuất</button>
+</div></header>
+
+<main>
+  <!-- Login -->
+  <section id="loginView" class="card login" hidden>
+    <h2>Đăng nhập</h2>
+    <p class="hint">Mã truy cập là một GitHub token. Token chỉ lưu trên trình duyệt này.</p>
+    <label>Mã truy cập (GitHub token)
+      <input id="tokenInput" type="password" autocomplete="off" placeholder="github_pat_..." />
+    </label>
+    <details style="margin-top:12px">
+      <summary class="hint">Cài đặt kho (thường không cần đổi)</summary>
+      <div class="grid" style="margin-top:8px">
+        <label>Chủ repo <input id="ownerInput" /></label>
+        <label>Tên repo <input id="repoInput" /></label>
+        <label>Nhánh <input id="branchInput" /></label>
+      </div>
+    </details>
+    <p style="margin-top:16px"><button class="primary" id="loginBtn">Đăng nhập</button></p>
+    <ol>
+      <li>Vào <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noreferrer">GitHub → Fine-grained token</a>.</li>
+      <li>Repository access: <b>Only select repositories</b> → chọn repo của thiệp.</li>
+      <li>Permissions → Repository → <b>Contents: Read and write</b>.</li>
+      <li>Tạo token, dán vào ô trên.</li>
+    </ol>
+  </section>
+
+  <!-- Editor -->
+  <div id="editorView" hidden></div>
+</main>
+
+<div class="savebar" id="saveBar" hidden><div class="bar">
+  <span id="status">Chưa có thay đổi</span>
+  <button class="primary" id="saveBtn">Lưu &amp; đăng lên</button>
+</div></div>
+
+<input type="file" id="filePicker" accept="image/*" hidden />
+
+<script>
+(function () {
+  const DEFAULTS = { owner: 'longnhatnguyen', repo: 'trongtien', branch: 'main' };
+  const PHOTO_DIR = 'assets/photos/uploads';
+  const store = {
+    get(k) { try { return localStorage.getItem('wadmin.' + k); } catch { return null; } },
+    set(k, v) { try { localStorage.setItem('wadmin.' + k, v); } catch {} },
+    del(k) { try { localStorage.removeItem('wadmin.' + k); } catch {} },
+  };
+  const cfg = {
+    token: store.get('token') || '',
+    owner: store.get('owner') || DEFAULTS.owner,
+    repo: store.get('repo') || DEFAULTS.repo,
+    branch: store.get('branch') || DEFAULTS.branch,
+  };
+
+  let data = null, sha = null;
+  const pending = {}; // photoKey -> { blob, dataUrl, name }
+  const $ = (id) => document.getElementById(id);
+  const statusEl = $('status');
+
+  function setStatus(msg, cls) { statusEl.textContent = msg; statusEl.className = cls || ''; }
+
+  // ---------- GitHub API ----------
+  async function gh(path, opts = {}) {
+    const res = await fetch(`https://api.github.com/repos/${cfg.owner}/${cfg.repo}/${path}`, {
+      ...opts,
+      headers: {
+        Authorization: `Bearer ${cfg.token}`,
+        Accept: 'application/vnd.github+json',
+        'X-GitHub-Api-Version': '2022-11-28',
+        ...(opts.body ? { 'Content-Type': 'application/json' } : {}),
+      },
+    });
+    if (!res.ok) {
+      let msg = res.status + '';
+      try { msg += ' ' + (await res.json()).message; } catch {}
+      const err = new Error(msg); err.status = res.status; throw err;
+    }
+    return res.json();
+  }
+  const b64ToUtf8 = (b64) => new TextDecoder().decode(Uint8Array.from(atob(b64.replace(/\n/g, '')), c => c.charCodeAt(0)));
+  const utf8ToB64 = (str) => { let s = ''; new TextEncoder().encode(str).forEach(b => s += String.fromCharCode(b)); return btoa(s); };
+  const blobToB64 = (blob) => new Promise((ok, no) => { const r = new FileReader(); r.onload = () => ok(r.result.split(',')[1]); r.onerror = no; r.readAsDataURL(blob); });
+
+  async function loadContent() {
+    const f = await gh(`contents/content.json?ref=${encodeURIComponent(cfg.branch)}`);
+    sha = f.sha;
+    data = JSON.parse(b64ToUtf8(f.content));
+  }
+
+  async function putFile(path, b64, message, fileSha) {
+    return gh(`contents/${path}`, {
+      method: 'PUT',
+      body: JSON.stringify({ message, content: b64, branch: cfg.branch, ...(fileSha ? { sha: fileSha } : {}) }),
+    });
+  }
+
+  // ---------- Image resize (keeps repo & page light) ----------
+  function resizeImage(file, maxSide = 1800, quality = 0.85) {
+    return new Promise((ok, no) => {
+      const img = new Image();
+      img.onload = () => {
+        const s = Math.min(1, maxSide / Math.max(img.width, img.height));
+        const c = document.createElement('canvas');
+        c.width = Math.round(img.width * s); c.height = Math.round(img.height * s);
+        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+        c.toBlob(b => b ? ok({ blob: b, dataUrl: c.toDataURL('image/jpeg', 0.6) }) : no(new Error('Không đọc được ảnh')), 'image/jpeg', quality);
+        URL.revokeObjectURL(img.src);
+      };
+      img.onerror = () => no(new Error('File không phải ảnh hợp lệ'));
+      img.src = URL.createObjectURL(file);
+    });
+  }
+
+  // ---------- Form builder ----------
+  const get = (o, p) => p.split('.').reduce((x, k) => x?.[k], o);
+  const set = (o, p, v) => { const ks = p.split('.'); const last = ks.pop(); ks.reduce((x, k) => x[k], o)[last] = v; };
+  let dirty = false;
+  function markDirty() { dirty = true; setStatus('Có thay đổi chưa lưu'); }
+
+  function field(label, path, opts = {}) {
+    const wrap = document.createElement('label');
+    if (opts.full) wrap.className = 'full';
+    wrap.textContent = label;
+    const el = document.createElement(opts.area ? 'textarea' : 'input');
+    if (opts.type) el.type = opts.type;
+    if (opts.placeholder) el.placeholder = opts.placeholder;
+    el.value = get(data, path) ?? '';
+    el.addEventListener('input', () => { set(data, path, el.value); markDirty(); });
+    wrap.appendChild(el);
+    return wrap;
+  }
+  function card(title, hint) {
+    const c = document.createElement('section'); c.className = 'card';
+    c.innerHTML = `<h2></h2>${hint ? '<p class="hint"></p>' : ''}`;
+    c.querySelector('h2').textContent = title;
+    if (hint) c.querySelector('.hint').textContent = hint;
+    return c;
+  }
+  function grid(children) { const g = document.createElement('div'); g.className = 'grid'; children.forEach(ch => g.appendChild(ch)); return g; }
+  function sub(text) { const h = document.createElement('h3'); h.textContent = text; return h; }
+
+  const PHOTO_LABELS = {
+    heroCover: 'Ảnh bìa chính', envelopeCandid1: 'Phong bì – ảnh 1', envelopeCandid2: 'Phong bì – ảnh 2',
+    saveTheDate: 'Nền Save the Date', groomPortrait: 'Chân dung chú rể', bridePortrait: 'Chân dung cô dâu',
+    galleryTilted1: 'Album – ảnh nghiêng 1', galleryTilted2: 'Album – ảnh nghiêng 2',
+    gallery1: 'Album 1', gallery2: 'Album 2', gallery3: 'Album 3', gallery4: 'Album 4',
+    gallery5: 'Album 5', gallery6: 'Album 6', gallery7: 'Album 7', gallery8: 'Album 8',
+    timelineBg: 'Nền lịch trình', guestbookBg: 'Nền sổ lưu bút', footerBg: 'Ảnh kết',
+    qrGroom: 'QR mừng cưới – chú rể', qrBride: 'QR mừng cưới – cô dâu',
+  };
+  const siteUrl = (p) => `https://raw.githubusercontent.com/${cfg.owner}/${cfg.repo}/${cfg.branch}/${p}`;
+
+  function buildEditor() {
+    const root = $('editorView'); root.innerHTML = '';
+
+    const c1 = card('Cô dâu & chú rể');
+    c1.appendChild(grid([
+      field('Tên chú rể', 'groomName'), field('Tên cô dâu', 'brideName'),
+      field('Chữ lồng (monogram)', 'monogram', { placeholder: 'T & H' }),
+      field('Câu khẩu hiệu', 'tagline'),
+    ]));
+    c1.appendChild(sub('Bố mẹ'));
+    c1.appendChild(grid([
+      field('Bố chú rể', 'parents.groomFather'), field('Mẹ chú rể', 'parents.groomMother'),
+      field('Bố cô dâu', 'parents.brideFather'), field('Mẹ cô dâu', 'parents.brideMother'),
+    ]));
+    root.appendChild(c1);
+
+    const c2 = card('Ngày cưới', 'Ngày giờ đếm ngược dùng định dạng của máy (giờ Việt Nam).');
+    c2.appendChild(grid([
+      field('Ngày hiển thị', 'dateText', { placeholder: '28.11.2026' }),
+      field('Ngày giờ đếm ngược', 'weddingDateTime', { type: 'datetime-local' }),
+    ]));
+    root.appendChild(c2);
+
+    const c3 = card('Lễ cưới');
+    [['groom', 'Nhà trai'], ['bride', 'Nhà gái']].forEach(([s, name]) => {
+      c3.appendChild(sub(name));
+      c3.appendChild(grid([
+        field('Tên lễ', `events.${s}.title`), field('Dòng phụ', `events.${s}.subtitle`),
+        field('Giờ', `events.${s}.time`), field('Ngày', `events.${s}.date`),
+        field('Âm lịch', `events.${s}.lunar`, { full: true }),
+        field('Địa điểm', `events.${s}.place`), field('Địa chỉ', `events.${s}.address`),
+        field('Link Google Maps', `events.${s}.mapUrl`, { full: true }),
+      ]));
+    });
+    root.appendChild(c3);
+
+    const c4 = card('Chuyện tình yêu');
+    data.story.forEach((_, i) => {
+      const it = document.createElement('div'); it.className = 'item';
+      it.appendChild(grid([
+        field('Thời gian', `story.${i}.time`), field('Tiêu đề', `story.${i}.title`),
+        field('Nội dung', `story.${i}.text`, { area: true, full: true }),
+      ]));
+      c4.appendChild(it);
+    });
+    root.appendChild(c4);
+
+    const c5 = card('Lịch trình ngày cưới');
+    data.schedule.forEach((_, i) => {
+      const g = grid([field('Giờ', `schedule.${i}.time`), field('Hoạt động', `schedule.${i}.label`)]);
+      g.classList.add('item'); c5.appendChild(g);
+    });
+    root.appendChild(c5);
+
+    const c6 = card('Mừng cưới (tài khoản)', 'Nhớ thay cả ảnh QR ở phần Ảnh nếu đổi số tài khoản.');
+    [['groom', 'Chú rể'], ['bride', 'Cô dâu']].forEach(([s, name]) => {
+      c6.appendChild(sub(name));
+      c6.appendChild(grid([
+        field('Ngân hàng', `bank.${s}.bank`), field('Chủ tài khoản', `bank.${s}.owner`), field('Số tài khoản', `bank.${s}.number`),
+      ]));
+    });
+    root.appendChild(c6);
+
+    const c7 = card('Lời cảm ơn cuối thiệp');
+    c7.appendChild(grid([field('Nội dung', 'thankYou', { area: true, full: true })]));
+    root.appendChild(c7);
+
+    const c8 = card('Ảnh', 'Bấm "Đổi ảnh" để chọn ảnh mới. Ảnh được tự thu nhỏ trước khi tải lên.');
+    const pg = document.createElement('div'); pg.className = 'photos';
+    Object.keys(PHOTO_LABELS).forEach(key => {
+      const box = document.createElement('div'); box.className = 'photo';
+      const img = document.createElement('img'); img.loading = 'lazy'; img.alt = PHOTO_LABELS[key];
+      img.src = pending[key]?.dataUrl || siteUrl(data.photos[key]);
+      if (pending[key]) img.classList.add('new');
+      const meta = document.createElement('div'); meta.className = 'meta';
+      const b = document.createElement('b'); b.textContent = PHOTO_LABELS[key];
+      const btn = document.createElement('button'); btn.type = 'button'; btn.textContent = 'Đổi ảnh';
+      btn.addEventListener('click', () => pickPhoto(key, img));
+      meta.append(b, btn); box.append(img, meta); pg.appendChild(box);
+    });
+    c8.appendChild(pg);
+    root.appendChild(c8);
+  }
+
+  let pickTarget = null;
+  function pickPhoto(key, img) { pickTarget = { key, img }; $('filePicker').value = ''; $('filePicker').click(); }
+  $('filePicker').addEventListener('change', async (e) => {
+    const file = e.target.files[0]; if (!file || !pickTarget) return;
+    try {
+      const { blob, dataUrl } = await resizeImage(file);
+      const name = `${pickTarget.key}-${Date.now()}.jpg`;
+      pending[pickTarget.key] = { blob, dataUrl, name };
+      pickTarget.img.src = dataUrl; pickTarget.img.classList.add('new');
+      markDirty();
+    } catch (err) { setStatus(err.message, 'err'); }
+  });
+
+  // ---------- Save ----------
+  async function save() {
+    const btn = $('saveBtn'); btn.disabled = true;
+    try {
+      const keys = Object.keys(pending);
+      for (let i = 0; i < keys.length; i++) {
+        const k = keys[i], p = pending[k];
+        setStatus(`Đang tải ảnh ${i + 1}/${keys.length}…`);
+        const path = `${PHOTO_DIR}/${p.name}`;
+        await putFile(path, await blobToB64(p.blob), `admin: cập nhật ảnh ${k}`);
+        data.photos[k] = path;
+        delete pending[k];
+      }
+      setStatus('Đang lưu nội dung…');
+      const json = JSON.stringify(data, null, 2) + '\n';
+      try {
+        const r = await putFile('content.json', utf8ToB64(json), 'admin: cập nhật nội dung thiệp', sha);
+        sha = r.content.sha;
+      } catch (err) {
+        if (err.status !== 409) throw err;
+        // Someone else saved meanwhile: refresh sha and retry once, keeping the edits in this form
+        setStatus('Nội dung đã đổi ở nơi khác, đang thử lưu lại…');
+        const latest = await gh(`contents/content.json?ref=${encodeURIComponent(cfg.branch)}`);
+        const r2 = await putFile('content.json', utf8ToB64(json), 'admin: cập nhật nội dung thiệp', latest.sha);
+        sha = r2.content.sha;
+      }
+      dirty = false;
+      setStatus('Đã lưu ✓ Thiệp sẽ cập nhật sau khoảng 1–2 phút.', 'ok');
+      buildEditor();
+    } catch (err) {
+      setStatus('Lỗi: ' + err.message, 'err');
+    } finally { btn.disabled = false; }
+  }
+
+  // ---------- Views ----------
+  function showLogin(msg) {
+    $('loginView').hidden = false; $('editorView').hidden = true; $('saveBar').hidden = true; $('logoutBtn').hidden = true;
+    $('tokenInput').value = ''; $('ownerInput').value = cfg.owner; $('repoInput').value = cfg.repo; $('branchInput').value = cfg.branch;
+    if (msg) { const p = $('loginView').querySelector('.hint'); p.textContent = msg; p.style.color = 'var(--err)'; }
+  }
+  async function enter() {
+    setStatus('Đang tải…');
+    try { await loadContent(); }
+    catch (err) {
+      if (err.status === 404) {
+        // Token can see the repo but content.json isn't pushed yet?
+        const repoOk = await fetch(`https://api.github.com/repos/${cfg.owner}/${cfg.repo}`, { headers: { Authorization: `Bearer ${cfg.token}` } }).then(r => r.ok).catch(() => false);
+        if (repoOk) return showLogin(`Token hợp lệ, nhưng repo chưa có file content.json trên nhánh "${cfg.branch}". Hãy push code lên trước.`);
+      }
+      if (err.status === 401 || err.status === 403 || err.status === 404) {
+        store.del('token'); cfg.token = '';
+        return showLogin('Không truy cập được repo: token sai, hết hạn, hoặc chưa cấp quyền Contents.');
+      }
+      return showLogin('Lỗi tải dữ liệu: ' + err.message);
+    }
+    $('loginView').hidden = true; $('editorView').hidden = false; $('saveBar').hidden = false; $('logoutBtn').hidden = false;
+    buildEditor(); setStatus('Chưa có thay đổi');
+  }
+
+  $('loginBtn').addEventListener('click', () => {
+    cfg.token = $('tokenInput').value.trim();
+    cfg.owner = $('ownerInput').value.trim() || DEFAULTS.owner;
+    cfg.repo = $('repoInput').value.trim() || DEFAULTS.repo;
+    cfg.branch = $('branchInput').value.trim() || DEFAULTS.branch;
+    if (!cfg.token) return;
+    store.set('token', cfg.token); store.set('owner', cfg.owner); store.set('repo', cfg.repo); store.set('branch', cfg.branch);
+    enter();
+  });
+  $('tokenInput').addEventListener('keydown', e => { if (e.key === 'Enter') $('loginBtn').click(); });
+  $('logoutBtn').addEventListener('click', () => { store.del('token'); cfg.token = ''; showLogin(); });
+  $('saveBtn').addEventListener('click', save);
+  window.addEventListener('beforeunload', e => { if (dirty) { e.preventDefault(); e.returnValue = ''; } });
+
+  cfg.token ? enter() : showLogin();
+})();
+</script>
+</body>
+</html>

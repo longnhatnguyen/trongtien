@@ -20,3 +20,7 @@ verify.js
 dewanakl-undangan/
 klpod221-wedding/
 rampatra-wedding/
+
+# Guest data (local server output)
+danh_sach_loi_chuc.txt
+danh_sach_rsvp.txt

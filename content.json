@@ -1,0 +1,126 @@
+{
+  "groomName": "Trọng Tiến",
+  "brideName": "Thu Hương",
+  "monogram": "T & H",
+  "dateText": "28.11.2026",
+  "weddingDateTime": "2026-11-28T16:00",
+  "tagline": "Một tình yêu được khắc trên tim",
+  "music": "assets/audio/wedding-song.mp3",
+  "parents": {
+    "groomFather": "Vũ Trọng Vĩnh",
+    "groomMother": "Vũ Thị Tuyết",
+    "brideFather": "Phạm Văn Hoan",
+    "brideMother": "Nguyễn Thị Tuyết"
+  },
+  "events": {
+    "groom": {
+      "title": "Lễ Thành Hôn",
+      "subtitle": "Bữa Cơm Thân Mật",
+      "time": "16:00 - Thứ Bảy",
+      "date": "28.11.2026",
+      "lunar": "(Tức ngày 20 tháng 10 năm Bính Ngọ)",
+      "place": "Tư gia Nhà trai",
+      "address": "Thôn Phương Man, xã Đông Thụy Anh, tỉnh Hưng Yên",
+      "mapUrl": "https://maps.app.goo.gl/QitUxBCeGotGJFvBA"
+    },
+    "bride": {
+      "title": "Lễ Thành Hôn",
+      "subtitle": "Bữa Cơm Thân Mật",
+      "time": "16:00 - Thứ Bảy",
+      "date": "28.11.2026",
+      "lunar": "(Tức ngày 20 tháng 10 năm Bính Ngọ)",
+      "place": "Tư gia Nhà gái",
+      "address": "Thôn Cam Giá, xã Vĩnh Phú, tỉnh Phú Thọ",
+      "mapUrl": "https://maps.app.goo.gl/NpZWA6aTgMxBjgK76"
+    }
+  },
+  "story": [
+    {
+      "time": "2022",
+      "title": "Gặp Nhau",
+      "text": "Chúng mình vào cùng công ty từ năm 2022. Nhưng mãi đến nửa cuối năm 2023 mới thực sự biết đến nhau khi cùng diễn chung một tiết mục văn nghệ. Từ những buổi tập luyện, dần dần quen thân hơn, rồi nhắn tin qua lại... Lúc nào không hay, lại thích nhau mất rồi! 🌸"
+    },
+    {
+      "time": "MÙA THU 2023",
+      "title": "Lời Tỏ Tình",
+      "text": "Một buổi tối mùa thu mát mẻ trước một cái hồ yên bình. Anh quay sang và nói: “Em làm người yêu anh nhé?”. Và em đã mỉm cười gật đầu. Từ khoảnh khắc ấy, chúng mình chính thức bước vào hành trình yêu thương cùng nhau. 💕"
+    },
+    {
+      "time": "2024 – 2025",
+      "title": "Những Ngày Yêu Nhau",
+      "text": "Cùng nhau trải qua bao thăng trầm, vui buồn và thử thách. Dù bận rộn nhưng hai đứa luôn dành thời gian quan tâm, chăm sóc và thấu hiểu nhau nhiều hơn qua từng ngày."
+    },
+    {
+      "time": "12/2025",
+      "title": "Lời Cầu Hôn",
+      "text": "Dưới ánh nến lung linh và khoảnh khắc xúc động ngập tràn, anh đã quỳ gối và trao chiếc nhẫn ước hẹn. Chúng mình biết rằng đã đến lúc cùng nhau xây đắp tổ ấm trọn đời. 💍"
+    },
+    {
+      "time": "28.11.2026",
+      "title": "Ngày Chung Đôi",
+      "text": "Chính thức nên duyên vợ chồng trong sự chúc phúc của gia đình hai bên và bạn bè thân thương! Hân hạnh được đón tiếp Quý vị! 💒"
+    }
+  ],
+  "schedule": [
+    {
+      "time": "05:00",
+      "label": "Xuất phát từ nhà trai"
+    },
+    {
+      "time": "07:00",
+      "label": "Đến nhà cô dâu"
+    },
+    {
+      "time": "07:50",
+      "label": "Bắt đầu về nhà trai"
+    },
+    {
+      "time": "10:00",
+      "label": "Lễ thành hôn"
+    },
+    {
+      "time": "11:00",
+      "label": "Chụp ảnh kỷ niệm"
+    },
+    {
+      "time": "11:30",
+      "label": "Dự tiệc"
+    }
+  ],
+  "bank": {
+    "groom": {
+      "bank": "VietinBank",
+      "owner": "VU TRONG TIEN",
+      "number": "107001173359"
+    },
+    "bride": {
+      "bank": "Shinhan Bank",
+      "owner": "PHAM THI THU HUONG",
+      "number": "0582743267"
+    }
+  },
+  "thankYou": "Cảm ơn bạn đã dành tình cảm cho chúng mình! Sự hiện diện của bạn là món quà quý giá nhất, khiến ngày trọng đại của chúng mình thêm trọn vẹn và đáng nhớ.",
+  "photos": {
+    "heroCover": "assets/photos/hero-cover.jpg",
+    "envelopeCandid1": "assets/photos/envelope-candid-1.jpg",
+    "envelopeCandid2": "assets/photos/envelope-candid-2.jpg",
+    "saveTheDate": "assets/photos/save-the-date.jpg",
+    "groomPortrait": "assets/photos/groom-portrait.jpg",
+    "bridePortrait": "assets/photos/bride-portrait.jpg",
+    "galleryTilted1": "assets/photos/gallery-tilted-1.jpg",
+    "galleryTilted2": "assets/photos/gallery-tilted-2.jpg",
+    "gallery1": "assets/photos/gallery-1.jpg",
+    "gallery2": "assets/photos/gallery-2.jpg",
+    "gallery3": "assets/photos/gallery-3.jpg",
+    "gallery4": "assets/photos/gallery-4.jpg",
+    "gallery5": "assets/photos/gallery-5.jpg",
+    "gallery6": "assets/photos/gallery-6.jpg",
+    "gallery7": "assets/photos/gallery-7.jpg",
+    "gallery8": "assets/photos/gallery-8.jpg",
+    "timelineBg": "assets/photos/timeline-bg.jpg",
+    "guestbookBg": "assets/photos/guestbook-bg.jpg",
+    "footerBg": "assets/photos/footer-bg.jpg",
+    "qrGroom": "assets/photos/qr-groom.png",
+    "qrBride": "assets/photos/qr-bride.png"
+  }
+}
