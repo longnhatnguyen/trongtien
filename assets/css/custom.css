@@ -1173,3 +1173,42 @@ body {
 .styles-module__WlSJYG__side-switch button {
   cursor: pointer;
 }
+
+/* ===== Fix: Ergisa font lacks Vietnamese glyphs (e.g. "Ế") -> use Lora for couple names ===== */
+.styles-module__WlSJYG__name[data-fit-text] {
+  font-family: 'Lora', Georgia, serif !important;
+  letter-spacing: 0.5px;
+}
+
+/* ===== Monogram: two initials side by side with a small ampersand (no overlap) ===== */
+.styles-module__WlSJYG__monogram-text {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+.styles-module__WlSJYG__monogram-initial {
+  font-family: 'Lora', Georgia, serif !important;
+  font-style: italic;
+  font-weight: 500 !important;
+  font-size: 2.3rem !important;
+  -webkit-text-stroke: 0 !important;
+  text-shadow: none !important;
+  transform: none !important;
+  line-height: 1 !important;
+}
+.styles-module__WlSJYG__monogram-bride::before {
+  content: '&';
+  font-family: 'Lora', serif;
+  font-style: italic;
+  font-size: 1.1rem;
+  margin: 0 6px;
+  opacity: 0.7;
+  vertical-align: middle;
+}
+.styles-module__WlSJYG__monogram-groom { margin-right: 8px !important; }
+
+/* ===== Fix: wax seal overlapping the guest badge on the envelope ===== */
+.wax-seal { top: 86px; width: 52px; height: 52px; }
+.envelope-guest-badge { bottom: 12px; padding: 7px 22px; }
+.guest-label { white-space: nowrap; letter-spacing: 0.08em; font-size: 10.5px; }

@@ -47,6 +47,25 @@
   .login ol { padding-left: 18px; color: var(--muted); font-size: 13px; }
   a { color: var(--accent); }
   [hidden] { display: none !important; }
+
+  /* Split view: form left, live preview right */
+  body.split header .bar, body.split .savebar .bar { max-width: none; }
+  body.split main { max-width: none; padding: 0; display: grid; grid-template-columns: minmax(420px, 1fr) minmax(380px, 1fr); }
+  body.split #editorView { height: calc(100vh - 57px - 61px); overflow-y: auto; padding: 20px 16px 24px; }
+  body.split #previewPane { display: flex; }
+  #previewPane { display: none; flex-direction: column; height: calc(100vh - 57px - 61px); border-left: 1px solid var(--line); background: #efe7e9; }
+  #previewPane .ptools { display: flex; gap: 8px; align-items: center; padding: 8px 12px; border-bottom: 1px solid var(--line); background: #fff; font-size: 13px; }
+  #previewPane .ptools span { flex: 1; color: var(--muted); }
+  #previewPane .ptools button { padding: 4px 10px; font-size: 13px; }
+  #previewPane .ptools button.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+  #previewWrap { flex: 1; display: flex; justify-content: center; overflow: hidden; padding: 12px; }
+  #previewFrame { border: 0; background: #fff; height: 100%; width: 100%; border-radius: 10px; box-shadow: 0 4px 24px rgba(0,0,0,.08); transition: width .2s; }
+  #previewWrap.mobile #previewFrame { width: 400px; max-width: 100%; }
+  @media (max-width: 900px) {
+    body.split main { grid-template-columns: 1fr; }
+    body.split #editorView { height: auto; overflow: visible; padding-bottom: 100px; }
+    body.split #previewPane { display: none; }
+  }
 </style>
 </head>
 <body>
@@ -83,6 +102,17 @@
 
   <!-- Editor -->
   <div id="editorView" hidden></div>
+
+  <!-- Live preview (only shown in split mode, wide screens) -->
+  <section id="previewPane" aria-label="Xem trước">
+    <div class="ptools">
+      <span>Xem trước – cập nhật ngay khi gõ (chưa lưu lên live)</span>
+      <button type="button" id="pvMobile" class="on">Điện thoại</button>
+      <button type="button" id="pvDesktop">Máy tính</button>
+      <button type="button" id="pvReload" title="Tải lại xem trước">↻</button>
+    </div>
+    <div id="previewWrap" class="mobile"><iframe id="previewFrame" title="Xem trước thiệp"></iframe></div>
+  </section>
 </main>
 
 <div class="savebar" id="saveBar" hidden><div class="bar">
@@ -110,6 +140,7 @@
 
   let data = null, sha = null;
   const pending = {}; // photoKey -> { blob, dataUrl, name }
+  const justUploaded = {}; // photoKey -> dataUrl (preview only)
   const $ = (id) => document.getElementById(id);
   const statusEl = $('status');
 
@@ -141,6 +172,13 @@
     const f = await gh(`contents/content.json?ref=${encodeURIComponent(cfg.branch)}`);
     sha = f.sha;
     data = JSON.parse(b64ToUtf8(f.content));
+    // Local dev: show the working-copy content.json (may have newer fields than GitHub)
+    if (/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) {
+      try {
+        const r = await fetch('content.json?t=' + Date.now(), { cache: 'no-store' });
+        if (r.ok) data = await r.json();
+      } catch {}
+    }
   }
 
   async function putFile(path, b64, message, fileSha) {
@@ -171,7 +209,40 @@
   const get = (o, p) => p.split('.').reduce((x, k) => x?.[k], o);
   const set = (o, p, v) => { const ks = p.split('.'); const last = ks.pop(); ks.reduce((x, k) => x[k], o)[last] = v; };
   let dirty = false;
-  function markDirty() { dirty = true; setStatus('Có thay đổi chưa lưu'); }
+  function markDirty() { dirty = true; setStatus('Có thay đổi chưa lưu'); schedulePreview(); }
+
+  // ---------- Live preview (iframe of the real invitation, same origin) ----------
+  const frame = $('previewFrame');
+  let pvTimer = null;
+  function schedulePreview() { clearTimeout(pvTimer); pvTimer = setTimeout(sendPreview, 250); }
+  function sendPreview() {
+    if (!data || !frame.contentWindow) return;
+    const copy = JSON.parse(JSON.stringify(data));
+    Object.keys(justUploaded).forEach(k => { copy.photos[k] = justUploaded[k]; });
+    Object.keys(pending).forEach(k => { copy.photos[k] = pending[k].dataUrl; });
+    frame.contentWindow.postMessage({ type: 'wedding-preview', data: copy }, location.origin);
+  }
+  frame.addEventListener('load', () => setTimeout(sendPreview, 300));
+  let textLabels = null; // original texts, used as field labels
+
+  // Click in preview -> focus the matching field
+  window.addEventListener('message', (e) => {
+    if (e.origin !== location.origin || !e.data || e.data.type !== 'wedding-pick') return;
+    const root = $('editorView');
+    for (const p of e.data.paths || []) {
+      const el = root.querySelector(`[data-path="${CSS.escape(p)}"]`);
+      if (!el) continue;
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      const target = el.matches('input,textarea') ? el : el.querySelector('button');
+      setTimeout(() => target && target.focus({ preventScroll: true }), 300);
+      el.animate([{ boxShadow: '0 0 0 4px #b5656f' }, { boxShadow: '0 0 0 0 transparent' }], { duration: 1400 });
+      break;
+    }
+  });
+  function loadPreview() { frame.src = './?preview=1&t=' + Date.now(); }
+  $('pvReload').addEventListener('click', loadPreview);
+  $('pvMobile').addEventListener('click', () => { $('previewWrap').classList.add('mobile'); $('pvMobile').classList.add('on'); $('pvDesktop').classList.remove('on'); });
+  $('pvDesktop').addEventListener('click', () => { $('previewWrap').classList.remove('mobile'); $('pvDesktop').classList.add('on'); $('pvMobile').classList.remove('on'); });
 
   function field(label, path, opts = {}) {
     const wrap = document.createElement('label');
@@ -181,6 +252,7 @@
     if (opts.type) el.type = opts.type;
     if (opts.placeholder) el.placeholder = opts.placeholder;
     el.value = get(data, path) ?? '';
+    el.dataset.path = path;
     el.addEventListener('input', () => { set(data, path, el.value); markDirty(); });
     wrap.appendChild(el);
     return wrap;
@@ -212,7 +284,9 @@
     const c1 = card('Cô dâu & chú rể');
     c1.appendChild(grid([
       field('Tên chú rể', 'groomName'), field('Tên cô dâu', 'brideName'),
-      field('Chữ lồng (monogram)', 'monogram', { placeholder: 'T & H' }),
+      field('Chữ lồng – chữ cái chú rể', 'monogramGroom', { placeholder: 'T' }),
+      field('Chữ lồng – chữ cái cô dâu', 'monogramBride', { placeholder: 'H' }),
+      field('Tiêu đề lớn đầu thiệp', 'heroTitle', { placeholder: "We're getting married" }),
       field('Câu khẩu hiệu', 'tagline'),
     ]));
     c1.appendChild(sub('Bố mẹ'));
@@ -273,15 +347,29 @@
     c7.appendChild(grid([field('Nội dung', 'thankYou', { area: true, full: true })]));
     root.appendChild(c7);
 
+    if (data.texts) {
+      const c9 = card('Tất cả chữ khác trên thiệp', 'Mẹo: bấm vào chữ bất kỳ ở khung xem trước để nhảy tới ô tương ứng.');
+      if (!textLabels) textLabels = { ...data.texts };
+      const items = Object.keys(data.texts).map(k => {
+        const label = (textLabels[k] || k).replace(/\s+/g, ' ').slice(0, 40);
+        const v = data.texts[k] || '';
+        return field(label, `texts.${k}`, { area: v.includes('\n') || v.length > 60, full: v.length > 60 });
+      });
+      c9.appendChild(grid(items));
+      root.appendChild(c9);
+    }
+
     const c8 = card('Ảnh', 'Bấm "Đổi ảnh" để chọn ảnh mới. Ảnh được tự thu nhỏ trước khi tải lên.');
     const pg = document.createElement('div'); pg.className = 'photos';
-    Object.keys(PHOTO_LABELS).forEach(key => {
+    Object.keys(data.photos).forEach(key => {
       const box = document.createElement('div'); box.className = 'photo';
-      const img = document.createElement('img'); img.loading = 'lazy'; img.alt = PHOTO_LABELS[key];
+      box.dataset.path = 'photos.' + key;
+      const label = PHOTO_LABELS[key] || ('Trang trí: ' + key.replace(/^img_/, '').replace(/_/g, ' '));
+      const img = document.createElement('img'); img.loading = 'lazy'; img.alt = label;
       img.src = pending[key]?.dataUrl || siteUrl(data.photos[key]);
       if (pending[key]) img.classList.add('new');
       const meta = document.createElement('div'); meta.className = 'meta';
-      const b = document.createElement('b'); b.textContent = PHOTO_LABELS[key];
+      const b = document.createElement('b'); b.textContent = label;
       const btn = document.createElement('button'); btn.type = 'button'; btn.textContent = 'Đổi ảnh';
       btn.addEventListener('click', () => pickPhoto(key, img));
       meta.append(b, btn); box.append(img, meta); pg.appendChild(box);
@@ -314,6 +402,7 @@
         const path = `${PHOTO_DIR}/${p.name}`;
         await putFile(path, await blobToB64(p.blob), `admin: cập nhật ảnh ${k}`);
         data.photos[k] = path;
+        justUploaded[k] = p.dataUrl; // Pages needs ~1 min to serve the new file; keep preview showing it
         delete pending[k];
       }
       setStatus('Đang lưu nội dung…');
@@ -330,8 +419,9 @@
         sha = r2.content.sha;
       }
       dirty = false;
-      setStatus('Đã lưu ✓ Thiệp sẽ cập nhật sau khoảng 1–2 phút.', 'ok');
+      setStatus('Đã lưu ✓ Đã lên live, site cập nhật sau khoảng 1–2 phút.', 'ok');
       buildEditor();
+      sendPreview();
     } catch (err) {
       setStatus('Lỗi: ' + err.message, 'err');
     } finally { btn.disabled = false; }
@@ -339,6 +429,7 @@
 
   // ---------- Views ----------
   function showLogin(msg) {
+    document.body.classList.remove('split');
     $('loginView').hidden = false; $('editorView').hidden = true; $('saveBar').hidden = true; $('logoutBtn').hidden = true;
     $('tokenInput').value = ''; $('ownerInput').value = cfg.owner; $('repoInput').value = cfg.repo; $('branchInput').value = cfg.branch;
     if (msg) { const p = $('loginView').querySelector('.hint'); p.textContent = msg; p.style.color = 'var(--err)'; }
@@ -360,6 +451,8 @@
     }
     $('loginView').hidden = true; $('editorView').hidden = false; $('saveBar').hidden = false; $('logoutBtn').hidden = false;
     buildEditor(); setStatus('Chưa có thay đổi');
+    document.body.classList.add('split');
+    loadPreview();
   }
 
   $('loginBtn').addEventListener('click', () => {

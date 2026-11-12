@@ -188,7 +188,10 @@ function initAudioPlayer() {
   discBtn.addEventListener('click', toggleAudio);
 
   // Play on first user gesture anywhere on screen
-  const enableAudioOnGesture = () => {
+  const enableAudioOnGesture = (e) => {
+    // Taps on the disc are handled by toggleAudio; never auto-start after user turned music off
+    if (e && e.target && e.target.closest && e.target.closest('#vinylDiscBtn')) return;
+    if (musicUserChoice) return;
     if (!audioPlaying) {
       playAudio();
     }
@@ -200,9 +203,18 @@ function initAudioPlayer() {
   document.addEventListener('touchstart', enableAudioOnGesture, { once: true });
 }
 
+let audioStarting = false;
+let musicUserChoice = false; // true once the guest taps the disc
 function playAudio() {
+  // Admin preview iframe stays silent
+  if (new URLSearchParams(location.search).has('preview')) return;
+  // Envelope-open and first-gesture handlers can both fire: start only once
+  if (audioPlaying || audioStarting) return;
+  audioStarting = true;
   weddingAudio.currentTime = Math.max(weddingAudio.currentTime, 7); // skip silence intro
-  weddingAudio.play().then(() => {
+  weddingAudio.play().finally(() => { audioStarting = false; }).then(() => {
+    // User tapped "off" while the song was still loading -> respect that
+    if (weddingAudio.paused) return;
     audioPlaying = true;
     const discBtn = document.getElementById('vinylDiscBtn');
     if (discBtn) {
@@ -222,10 +234,14 @@ function pauseAudio() {
   if (discBtn) {
     discBtn.classList.add('paused');
   }
+  showToast('🔇 Đã tắt nhạc · chạm đĩa để bật lại');
 }
 
-function toggleAudio() {
-  if (audioPlaying) {
+function toggleAudio(e) {
+  // Disc tap must not also count as the "first gesture" that auto-starts music
+  if (e) e.stopPropagation();
+  musicUserChoice = true;
+  if (audioPlaying || audioStarting) {
     pauseAudio();
   } else {
     playAudio();
@@ -327,7 +343,12 @@ function initSideSwitcher() {
     `
   };
 
+  let currentIsGroom = true;
+  // Lets admin live-preview re-render the event block without a synthetic click
+  window.__rerenderSide = () => setSide(currentIsGroom);
+
   function setSide(isGroom) {
+    currentIsGroom = isGroom;
     switchBtns.forEach(b => {
       const match = isGroom ? b.textContent.includes('Nhà trai') : b.textContent.includes('Nhà gái');
       b.classList.toggle('styles-module__WlSJYG__active', match);

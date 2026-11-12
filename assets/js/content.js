@@ -24,7 +24,7 @@
   function setText(el, text) {
     // Replace only the first direct text node so nested markup survives.
     const node = Array.from(el.childNodes).find(n => n.nodeType === 3 && n.textContent.trim());
-    if (node && el.children.length) node.textContent = text;
+    if (node && el.childNodes.length > 1) node.textContent = text;
     else el.textContent = text;
   }
 
@@ -52,6 +52,28 @@
   // Only allow http(s) links from admin-edited data (blocks javascript: URLs)
   window.safeUrl = (v) => typeof v === 'string' && /^https?:\/\//i.test(v.trim());
   window.applyContent = applyContent;
+
+  // Live preview from admin.html (iframe ?preview=1, same origin only)
+  if (new URLSearchParams(location.search).has('preview')) {
+    window.addEventListener('message', (e) => {
+      if (e.origin !== location.origin || !e.data || e.data.type !== 'wedding-preview') return;
+      window.__previewActive = true;
+      const data = e.data.data;
+      window.WEDDING = data;
+      applyContent(data);
+      // Re-render the active side's event block with new values
+      if (window.__rerenderSide) window.__rerenderSide();
+    });
+    // Click on any editable element in the preview -> tell admin which field to focus
+    document.addEventListener('click', (e) => {
+      const el = e.target.closest('[data-ct],[data-ci],[data-cbg]');
+      if (!el) return;
+      const paths = el.hasAttribute('data-ct')
+        ? (el.getAttribute('data-ct').match(/\{([\w.]+)\}/g) || []).map(s => s.slice(1, -1))
+        : [el.getAttribute('data-ci') || el.getAttribute('data-cbg')];
+      parent.postMessage({ type: 'wedding-pick', paths }, location.origin);
+    }, true);
+  }
   window.WEDDING = null;
   const domReady = new Promise(ok => {
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ok, { once: true });
@@ -66,6 +88,7 @@
     .then(r => (r.ok ? r.json() : Promise.reject(r.status)))
     .then(data => domReady.then(() => {
       clearTimeout(timer);
+      if (window.__previewActive) return window.WEDDING; // admin preview already pushed newer data
       window.WEDDING = data;
       applyContent(data);
       if (data.groomName && data.brideName) {
