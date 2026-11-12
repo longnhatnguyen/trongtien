@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Khách mời & lời chúc</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Playfair+Display:ital,wght@1,500&display=swap" rel="stylesheet" />
+<style>
+  :root { --bg:#faf6f4; --card:#fff; --ink:#2d2326; --muted:#8a7a7e; --line:#ecdfe1; --accent:#b5656f; --ok:#3f8a5c; --no:#a8606a; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.5 "Be Vietnam Pro", system-ui, sans-serif; }
+  header { position:sticky; top:0; z-index:5; background:rgba(250,246,244,.92); backdrop-filter:blur(8px); border-bottom:1px solid var(--line); }
+  .bar { max-width:1000px; margin:0 auto; padding:12px 16px; display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+  .brand { font-family:"Playfair Display",serif; font-style:italic; font-size:20px; color:var(--accent); flex:1; }
+  main { max-width:1000px; margin:0 auto; padding:20px 16px 60px; }
+  .stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; margin-bottom:16px; }
+  .stat { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px 16px; }
+  .stat b { display:block; font-size:28px; font-weight:700; color:var(--accent); line-height:1.1; font-variant-numeric:tabular-nums; }
+  .stat span { font-size:13px; color:var(--muted); }
+  .tabs { display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap; align-items:center; }
+  button { font:inherit; cursor:pointer; border-radius:9px; border:1px solid var(--line); background:#fff; padding:8px 14px; color:var(--ink); }
+  button.on { background:var(--accent); border-color:var(--accent); color:#fff; font-weight:600; }
+  input[type=search] { flex:1; min-width:180px; padding:9px 12px; border:1px solid var(--line); border-radius:9px; font:inherit; }
+  select { padding:8px 10px; border:1px solid var(--line); border-radius:9px; font:inherit; background:#fff; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:14px; overflow:hidden; }
+  table { width:100%; border-collapse:collapse; }
+  th, td { text-align:left; padding:10px 14px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th { font-size:12px; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); background:#fcf8f8; font-weight:600; }
+  tr:last-child td { border-bottom:0; }
+  td.num { font-variant-numeric:tabular-nums; text-align:right; }
+  .pill { display:inline-block; padding:2px 10px; border-radius:999px; font-size:12px; font-weight:600; white-space:nowrap; }
+  .yes { background:#e6f3ea; color:var(--ok); } .no { background:#f6e8ea; color:var(--no); }
+  .time { color:var(--muted); font-size:13px; white-space:nowrap; }
+  .wish { white-space:pre-wrap; }
+  .empty { padding:40px 16px; text-align:center; color:var(--muted); }
+  .note { background:#fff7e6; border:1px solid #f0dcae; border-radius:12px; padding:12px 14px; font-size:13px; margin-bottom:16px; }
+  #updated { font-size:13px; color:var(--muted); }
+  @media (max-width:640px) {
+    thead { display:none; }
+    tr { display:block; padding:10px 14px; border-bottom:1px solid var(--line); }
+    td { display:block; border:0; padding:2px 0; text-align:left !important; }
+  }
+</style>
+</head>
+<body>
+<header><div class="bar">
+  <div class="brand">Khách mời & lời chúc</div>
+  <span id="updated"></span>
+  <button id="reloadBtn">↻ Tải lại</button>
+  <a href="admin.html">Quản trị ↗</a>
+</div></header>
+
+<main>
+  <div id="note" class="note" hidden></div>
+
+  <div class="stats">
+    <div class="stat"><b id="sComing">0</b><span>xác nhận sẽ đến</span></div>
+    <div class="stat"><b id="sPeople">0</b><span>tổng số người sẽ đến</span></div>
+    <div class="stat"><b id="sGroom">0</b><span>người – nhà trai</span></div>
+    <div class="stat"><b id="sBride">0</b><span>người – nhà gái</span></div>
+    <div class="stat"><b id="sBusy">0</b><span>báo bận</span></div>
+    <div class="stat"><b id="sWish">0</b><span>lời chúc</span></div>
+  </div>
+
+  <div class="tabs">
+    <button id="tabRsvp" class="on">Xác nhận tham dự</button>
+    <button id="tabWish">Lời chúc</button>
+    <select id="filter" aria-label="Lọc">
+      <option value="">Tất cả</option>
+      <option value="yes">Sẽ đến</option>
+      <option value="no">Bận</option>
+      <option value="trai">Nhà trai</option>
+      <option value="gai">Nhà gái</option>
+    </select>
+    <input type="search" id="q" placeholder="Tìm theo tên hoặc nội dung…" />
+  </div>
+
+  <div class="card" id="list"></div>
+</main>
+
+<script>
+(function () {
+  const $ = id => document.getElementById(id);
+  let rsvp = [], wishes = [], tab = 'rsvp';
+
+  // Line formats written by server.js:
+  // [time] Tên: X | Tham dự: Sẽ đến | Phe: Y | Số người: N
+  // [time] Tên: X | Phe: Y | Lời chúc: "..."
+  function parse(text, kind) {
+    return text.replace(/^\uFEFF/, '').split(/\r?\n/).filter(l => l.trim()).map(line => {
+      const m = line.match(/^\[([^\]]*)\]\s*(.*)$/);
+      const rec = { time: m ? m[1] : '', raw: line };
+      const body = m ? m[2] : line;
+      if (kind === 'wish') {
+        const w = body.match(/Lời chúc:\s*"([\s\S]*)"\s*$/);
+        rec.message = w ? w[1] : '';
+        const head = w ? body.slice(0, w.index) : body;
+        head.split('|').forEach(p => kv(rec, p));
+      } else {
+        body.split('|').forEach(p => kv(rec, p));
+      }
+      return rec;
+    });
+  }
+  function kv(rec, part) {
+    const i = part.indexOf(':'); if (i < 0) return;
+    const k = part.slice(0, i).trim(), v = part.slice(i + 1).trim();
+    if (k === 'Tên') rec.name = v;
+    else if (k === 'Tham dự') rec.coming = /đến/i.test(v);
+    else if (k === 'Phe') rec.side = v;
+    else if (k === 'Số người') rec.count = parseInt(v, 10) || 1;
+  }
+  const sideKey = s => /trai|groom/i.test(s || '') ? 'trai' : /gái|gai|bride/i.test(s || '') ? 'gai' : '';
+  const sideLabel = s => ({ trai: 'Nhà trai', gai: 'Nhà gái' }[sideKey(s)] || (s || '—'));
+
+  async function fetchText(url) {
+    const r = await fetch(url + '?t=' + Date.now(), { cache: 'no-store' });
+    if (r.status === 404) return '';
+    if (!r.ok) throw new Error(r.status);
+    return r.text();
+  }
+
+  async function load() {
+    $('note').hidden = true;
+    try {
+      const [a, b] = await Promise.all([fetchText('danh_sach_rsvp.txt'), fetchText('danh_sach_loi_chuc.txt')]);
+      rsvp = parse(a, 'rsvp').reverse();
+      wishes = parse(b, 'wish').reverse();
+      $('updated').textContent = 'Cập nhật ' + new Date().toLocaleTimeString('vi-VN');
+    } catch (e) {
+      rsvp = []; wishes = [];
+      $('note').textContent = 'Không đọc được file danh sách: ' + e.message;
+      $('note').hidden = false;
+    }
+    if (!/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) {
+      $('note').innerHTML = 'Trang này đọc 2 file <b>danh_sach_rsvp.txt</b> và <b>danh_sach_loi_chuc.txt</b> do <code>node server.js</code> ghi ra, nên chỉ có dữ liệu khi mở ở máy chạy server (http://localhost:3000/guests.html). Trên GitHub Pages không có nơi lưu, khách gửi sẽ không được ghi lại.';
+      $('note').hidden = false;
+    }
+    render();
+  }
+
+  function stats() {
+    const coming = rsvp.filter(r => r.coming);
+    const sum = arr => arr.reduce((s, r) => s + (r.count || 1), 0);
+    $('sComing').textContent = coming.length;
+    $('sPeople').textContent = sum(coming);
+    $('sGroom').textContent = sum(coming.filter(r => sideKey(r.side) === 'trai'));
+    $('sBride').textContent = sum(coming.filter(r => sideKey(r.side) === 'gai'));
+    $('sBusy').textContent = rsvp.length - coming.length;
+    $('sWish').textContent = wishes.length;
+  }
+
+  function cell(tr, text, cls) { const td = document.createElement('td'); td.textContent = text; if (cls) td.className = cls; tr.appendChild(td); return td; }
+
+  function render() {
+    stats();
+    const q = $('q').value.trim().toLowerCase();
+    const f = $('filter').value;
+    const rows = (tab === 'rsvp' ? rsvp : wishes).filter(r => {
+      if (q && !(r.raw || '').toLowerCase().includes(q)) return false;
+      if (f === 'yes' && !(tab === 'rsvp' && r.coming)) return false;
+      if (f === 'no' && !(tab === 'rsvp' && r.coming === false)) return false;
+      if ((f === 'trai' || f === 'gai') && sideKey(r.side) !== f) return false;
+      return true;
+    });
+    $('filter').querySelector('[value=yes]').hidden = $('filter').querySelector('[value=no]').hidden = tab !== 'rsvp';
+
+    const list = $('list'); list.innerHTML = '';
+    if (!rows.length) { list.innerHTML = '<div class="empty">Chưa có dữ liệu</div>'; return; }
+    const table = document.createElement('table');
+    table.innerHTML = tab === 'rsvp'
+      ? '<thead><tr><th>Tên</th><th>Tham dự</th><th>Phe</th><th style="text-align:right">Số người</th><th>Thời gian</th></tr></thead>'
+      : '<thead><tr><th>Tên</th><th>Phe</th><th>Lời chúc</th><th>Thời gian</th></tr></thead>';
+    const tb = document.createElement('tbody');
+    rows.forEach(r => {
+      const tr = document.createElement('tr');
+      const nameTd = cell(tr, r.name || 'Khách'); nameTd.style.fontWeight = '600';
+      if (tab === 'rsvp') {
+        const td = cell(tr, '');
+        const pill = document.createElement('span');
+        pill.className = 'pill ' + (r.coming ? 'yes' : 'no');
+        pill.textContent = r.coming ? 'Sẽ đến' : 'Bận';
+        td.appendChild(pill);
+        cell(tr, sideLabel(r.side));
+        cell(tr, r.coming ? String(r.count || 1) : '—', 'num');
+      } else {
+        cell(tr, sideLabel(r.side));
+        cell(tr, r.message, 'wish');
+      }
+      cell(tr, r.time, 'time');
+      tb.appendChild(tr);
+    });
+    table.appendChild(tb); list.appendChild(table);
+  }
+
+  function setTab(t) {
+    tab = t;
+    $('tabRsvp').classList.toggle('on', t === 'rsvp');
+    $('tabWish').classList.toggle('on', t === 'wish');
+    $('filter').value = '';
+    render();
+  }
+  $('tabRsvp').onclick = () => setTab('rsvp');
+  $('tabWish').onclick = () => setTab('wish');
+  $('q').oninput = render;
+  $('filter').onchange = render;
+  $('reloadBtn').onclick = load;
+  setInterval(load, 15000); // auto-refresh while server is collecting
+  load();
+})();
+</script>
+</body>
+</html>
