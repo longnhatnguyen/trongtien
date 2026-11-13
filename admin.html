@@ -274,7 +274,7 @@
     galleryTilted1: 'Album – ảnh nghiêng 1', galleryTilted2: 'Album – ảnh nghiêng 2',
     gallery1: 'Album 1', gallery2: 'Album 2', gallery3: 'Album 3', gallery4: 'Album 4',
     gallery5: 'Album 5', gallery6: 'Album 6', gallery7: 'Album 7', gallery8: 'Album 8',
-    timelineBg: 'Nền lịch trình', guestbookBg: 'Nền sổ lưu bút', footerBg: 'Ảnh kết',
+    guestbookBg: 'Nền sổ lưu bút', footerBg: 'Ảnh kết',
     qrGroom: 'QR mừng cưới – chú rể', qrBride: 'QR mừng cưới – cô dâu',
   };
   const siteUrl = (p) => `https://raw.githubusercontent.com/${cfg.owner}/${cfg.repo}/${cfg.branch}/${p}`;
@@ -316,24 +316,6 @@
       ]));
     });
     root.appendChild(c3);
-
-    const c4 = card('Chuyện tình yêu');
-    data.story.forEach((_, i) => {
-      const it = document.createElement('div'); it.className = 'item';
-      it.appendChild(grid([
-        field('Thời gian', `story.${i}.time`), field('Tiêu đề', `story.${i}.title`),
-        field('Nội dung', `story.${i}.text`, { area: true, full: true }),
-      ]));
-      c4.appendChild(it);
-    });
-    root.appendChild(c4);
-
-    const c5 = card('Lịch trình ngày cưới');
-    data.schedule.forEach((_, i) => {
-      const g = grid([field('Giờ', `schedule.${i}.time`), field('Hoạt động', `schedule.${i}.label`)]);
-      g.classList.add('item'); c5.appendChild(g);
-    });
-    root.appendChild(c5);
 
     const c6 = card('Mừng cưới (tài khoản)', 'Nhớ thay cả ảnh QR ở phần Ảnh nếu đổi số tài khoản.');
     [['groom', 'Chú rể'], ['bride', 'Cô dâu']].forEach(([s, name]) => {
