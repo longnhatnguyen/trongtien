@@ -1278,3 +1278,34 @@ body {
   line-height: 1.25 !important;
   color: #b5566a !important;
 }
+
+/* ===== Monogram v3 (mẫu E): Parisienne + small "&" inside a diamond frame — overrides earlier versions ===== */
+.styles-module__WlSJYG__monogram-text {
+  position: relative;
+  width: 140px !important; height: 140px !important;
+  border: 0 !important; border-radius: 0 !important;
+  box-shadow: none !important;
+  display: flex !important; align-items: center; justify-content: center;
+  gap: 0 !important;
+}
+.styles-module__WlSJYG__monogram-text::before {
+  content: ""; position: absolute; inset: 22px;
+  border: 1px solid rgba(181, 86, 106, .4);
+  transform: rotate(45deg);
+  pointer-events: none;
+}
+.styles-module__WlSJYG__monogram-initial {
+  font-family: 'Parisienne', cursive !important;
+  font-style: normal !important; font-weight: 400 !important;
+  font-size: 3.3rem !important; line-height: 1 !important;
+  color: #b5566a !important;
+  transform: none !important; margin: 0 !important;
+  position: relative;
+}
+.styles-module__WlSJYG__monogram-bride::before {
+  content: '&' !important;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: normal; font-size: 1.4rem;
+  color: #8f6f4e; opacity: 1;
+  margin: 0 4px; vertical-align: middle;
+}
