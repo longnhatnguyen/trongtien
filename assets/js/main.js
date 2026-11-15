@@ -165,11 +165,51 @@ function initGuestName() {
 function initAlbumCarousel() {
   // Transform-only carousel (no native scrolling): every card is positioned from one
   // float `pos` and redrawn in the same frame as the finger -> no lag, no snap jump.
-  const track = document.querySelector('.styles-module__WlSJYG__photo-grid');
+  let track = document.querySelector('.styles-module__WlSJYG__photo-grid');
   if (!track) return;
+
+  // Build slides from content.json -> album (any number of photos, set in admin).
+  // Replacing the track with a shallow clone also drops listeners from a previous init (live preview).
+  const album = window.WEDDING && Array.isArray(window.WEDDING.album) ? window.WEDDING.album.filter(Boolean) : null;
+  if (album) {
+    const fresh = track.cloneNode(false);
+    // The scroll-reveal observer watched the old node; a rebuilt track would stay at opacity 0.
+    // The carousel animates itself, so drop the stagger-reveal classes.
+    fresh.classList.remove('styles-module__WlSJYG__reveal', 'styles-module__WlSJYG__reveal-stagger', 'styles-module__WlSJYG__reveal-ready');
+    fresh.removeAttribute('data-reveal');
+    album.forEach((src, i) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'styles-module__WlSJYG__photo';
+      b.setAttribute('aria-label', `Xem ảnh ${i + 1} trong album`);
+      const img = document.createElement('img');
+      img.src = src;
+      img.alt = `Khoảnh khắc ${i + 1}`;
+      img.loading = 'lazy';
+      img.decoding = 'async';
+      b.appendChild(img);
+      fresh.appendChild(b);
+    });
+    track.replaceWith(fresh);
+    track = fresh;
+    if (window.__setAlbumImages) window.__setAlbumImages(album);
+  }
+  const oldDots = track.nextElementSibling;
+  if (oldDots && oldDots.classList.contains('album-dots')) oldDots.remove();
+  window.__rebuildAlbum = initAlbumCarousel;
+
   const slides = Array.from(track.querySelectorAll('.styles-module__WlSJYG__photo'));
-  if (slides.length < 2) return;
+  track.closest('section')?.classList.toggle('album-empty', slides.length === 0);
+  if (!slides.length) return;
   track.classList.add('album-js');
+
+  // Tap (not drag) on a slide opens it in the lightbox
+  track.addEventListener('click', (e) => {
+    const s = e.target.closest('.styles-module__WlSJYG__photo');
+    if (!s || moved > 6) return;
+    const img = s.querySelector('img');
+    if (img && window.__openAlbumPhoto) window.__openAlbumPhoto(img.getAttribute('src'));
+  });
 
   const dots = document.createElement('div');
   dots.className = 'album-dots';
@@ -569,6 +609,12 @@ function initLightbox() {
     ['galleryTilted1', 'galleryTilted2', 'gallery1', 'gallery2', 'gallery3', 'gallery4',
      'gallery5', 'gallery6', 'gallery7', 'gallery8'].forEach((k, i) => { if (P[k]) galleryImages[i] = P[k]; });
   }
+  // Swipe album is a variable-length list (content.json -> album), edited in admin
+  function setAlbumImages(album) {
+    if (Array.isArray(album)) galleryImages.splice(2, galleryImages.length - 2, ...album.filter(Boolean));
+  }
+  setAlbumImages(window.WEDDING && window.WEDDING.album);
+  window.__setAlbumImages = setAlbumImages;
 
   let currentIndex = 0;
 
@@ -585,6 +631,13 @@ function initLightbox() {
     lightbox.classList.add('active');
     document.body.style.overflow = 'hidden';
   }
+
+  // Used by the swipe album (its slides are rebuilt from content.json, so it opens the lightbox itself)
+  window.__openAlbumPhoto = (src) => {
+    list = galleryImages;
+    const i = galleryImages.indexOf(src);
+    openLightbox(i < 0 ? 2 : i);
+  };
 
   function closeLightbox() {
     lightbox.classList.remove('active');

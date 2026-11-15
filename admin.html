@@ -39,6 +39,14 @@
   .photo .new { outline: 3px solid var(--accent); outline-offset: -3px; }
   .photo button { width: 100%; padding: 6px; font-size: 12px; }
   .hint { color: var(--muted); font-size: 13px; }
+  .album-actions { display: flex; gap: 4px; }
+  .album-actions button { flex: 1; padding: 5px 0; font-size: 13px; }
+  .album-actions button:last-child { color: var(--err); }
+  .album-actions button:disabled { opacity: .35; cursor: default; }
+  .album-add { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+    min-height: 150px; border: 2px dashed var(--line); background: #fcf8f8; color: var(--accent); font-weight: 600; cursor: pointer; border-radius: 10px; }
+  .album-add span { font-size: 32px; line-height: 1; }
+  .album-add:hover { border-color: var(--accent); }
   .savebar { position: fixed; left: 0; right: 0; bottom: 0; background: #fff; border-top: 1px solid var(--line); }
   .savebar .bar { justify-content: flex-end; }
   #status { flex: 1; font-size: 13px; color: var(--muted); }
@@ -142,6 +150,8 @@
   let data = null, sha = null;
   const pending = {}; // photoKey -> { blob, dataUrl, name }
   const justUploaded = {}; // photoKey -> dataUrl (preview only)
+  const albumPending = {}; // 'pending:id' -> { blob, dataUrl, name } (new album photos not uploaded yet)
+  const albumUploaded = {}; // uploaded path -> dataUrl (preview/thumbs while Pages rebuilds)
   const $ = (id) => document.getElementById(id);
   const statusEl = $('status');
 
@@ -221,6 +231,7 @@
     const copy = JSON.parse(JSON.stringify(data));
     Object.keys(justUploaded).forEach(k => { copy.photos[k] = justUploaded[k]; });
     Object.keys(pending).forEach(k => { copy.photos[k] = pending[k].dataUrl; });
+    if (Array.isArray(copy.album)) copy.album = copy.album.map(s => (albumPending[s] ? albumPending[s].dataUrl : (albumUploaded[s] || s)));
     frame.contentWindow.postMessage({ type: 'wedding-preview', data: copy }, location.origin);
   }
   frame.addEventListener('load', () => setTimeout(sendPreview, 300));
@@ -346,9 +357,41 @@
       root.appendChild(c9);
     }
 
+    // ----- Swipe album: variable number of photos -----
+    if (!Array.isArray(data.album)) data.album = [];
+    const ca = card(`Album ảnh lướt ngang (${data.album.length} ảnh)`, 'Thêm, xoá, đổi thứ tự ảnh. Có thể chọn nhiều ảnh một lúc.');
+    ca.dataset.path = 'album';
+    const ag = document.createElement('div'); ag.className = 'photos';
+    data.album.forEach((src, i) => {
+      const box = document.createElement('div'); box.className = 'photo';
+      const img = document.createElement('img'); img.loading = 'lazy'; img.alt = `Ảnh album ${i + 1}`;
+      const pend = typeof src === 'string' && src.startsWith('pending:') ? albumPending[src] : null;
+      img.src = pend ? pend.dataUrl : (albumUploaded[src] || siteUrl(src));
+      if (pend) img.classList.add('new');
+      const meta = document.createElement('div'); meta.className = 'meta';
+      const b = document.createElement('b'); b.textContent = `Ảnh ${i + 1}`;
+      const row = document.createElement('div'); row.className = 'album-actions';
+      const mk = (txt, title, fn, disabled) => {
+        const x = document.createElement('button'); x.type = 'button'; x.textContent = txt; x.title = title;
+        x.disabled = !!disabled; x.addEventListener('click', fn); return x;
+      };
+      row.append(
+        mk('←', 'Đưa lên trước', () => moveAlbum(i, -1), i === 0),
+        mk('→', 'Đưa ra sau', () => moveAlbum(i, 1), i === data.album.length - 1),
+        mk('✕', 'Xoá ảnh này', () => removeAlbum(i))
+      );
+      meta.append(b, row); box.append(img, meta); ag.appendChild(box);
+    });
+    const add = document.createElement('button'); add.type = 'button'; add.className = 'photo album-add';
+    add.innerHTML = '<span>+</span>Thêm ảnh';
+    add.addEventListener('click', () => { albumPicker.value = ''; albumPicker.click(); });
+    ag.appendChild(add);
+    ca.appendChild(ag);
+    root.appendChild(ca);
+
     const c8 = card('Ảnh', 'Bấm "Đổi ảnh" để chọn ảnh mới. Ảnh được tự thu nhỏ trước khi tải lên.');
     const pg = document.createElement('div'); pg.className = 'photos';
-    Object.keys(data.photos).forEach(key => {
+    Object.keys(data.photos).filter(k => !/^gallery\d+$/.test(k)).forEach(key => {
       const box = document.createElement('div'); box.className = 'photo';
       box.dataset.path = 'photos.' + key;
       const label = PHOTO_LABELS[key] || ('Trang trí: ' + key.replace(/^img_/, '').replace(/_/g, ' '));
@@ -363,6 +406,36 @@
     });
     c8.appendChild(pg);
     root.appendChild(c8);
+  }
+
+  // ----- Album editing -----
+  const albumPicker = document.createElement('input');
+  albumPicker.type = 'file'; albumPicker.accept = 'image/*'; albumPicker.multiple = true; albumPicker.hidden = true;
+  document.body.appendChild(albumPicker);
+  albumPicker.addEventListener('change', async () => {
+    const files = Array.from(albumPicker.files || []);
+    if (!files.length) return;
+    setStatus(`Đang xử lý ${files.length} ảnh…`);
+    for (const file of files) {
+      try {
+        const { blob, dataUrl } = await resizeImage(file);
+        const id = 'pending:' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+        albumPending[id] = { blob, dataUrl, name: `album-${id.slice(8)}.jpg` };
+        data.album.push(id);
+      } catch (err) { setStatus(err.message, 'err'); }
+    }
+    buildEditor(); markDirty();
+    $('editorView').querySelector('[data-path="album"]')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  function moveAlbum(i, dir) {
+    const j = i + dir; if (j < 0 || j >= data.album.length) return;
+    [data.album[i], data.album[j]] = [data.album[j], data.album[i]];
+    buildEditor(); markDirty();
+  }
+  function removeAlbum(i) {
+    const [gone] = data.album.splice(i, 1);
+    if (albumPending[gone]) delete albumPending[gone];
+    buildEditor(); markDirty();
   }
 
   let pickTarget = null;
@@ -391,6 +464,17 @@
         data.photos[k] = path;
         justUploaded[k] = p.dataUrl; // Pages needs ~1 min to serve the new file; keep preview showing it
         delete pending[k];
+      }
+      // New album photos
+      const albumIds = (data.album || []).filter(s => albumPending[s]);
+      for (let i = 0; i < albumIds.length; i++) {
+        const id = albumIds[i], p = albumPending[id];
+        setStatus(`Đang tải ảnh album ${i + 1}/${albumIds.length}…`);
+        const path = `${PHOTO_DIR}/${p.name}`;
+        await putFile(path, await blobToB64(p.blob), 'admin: thêm ảnh album');
+        data.album[data.album.indexOf(id)] = path;
+        albumUploaded[path] = p.dataUrl;
+        delete albumPending[id];
       }
       setStatus('Đang lưu nội dung…');
       const json = JSON.stringify(data, null, 2) + '\n';

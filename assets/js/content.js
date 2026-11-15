@@ -63,6 +63,12 @@
       applyContent(data);
       // Re-render the active side's event block with new values
       if (window.__rerenderSide) window.__rerenderSide();
+      // Rebuild the swipe album only when its list changed (keeps the current slide otherwise)
+      const albumKey = JSON.stringify(data.album || null);
+      if (window.__rebuildAlbum && albumKey !== window.__lastAlbumKey) {
+        window.__lastAlbumKey = albumKey;
+        window.__rebuildAlbum();
+      }
     });
     // Click on any editable element in the preview -> tell admin which field to focus
     document.addEventListener('click', (e) => {
