@@ -7,9 +7,9 @@
   "weddingDateTime": "2026-11-28T16:00",
   "heroTitle": "Forever Begins With You",
   "tagline": "A lifetime of love starts here",
-  "music": "assets/audio/uploads/music-1794745505886.mp3",
-  "musicTitle": "Marry You",
-  "musicStart": 1,
+  "music": "assets/audio/uploads/music-1794744674583.mp3",
+  "musicTitle": "I Do",
+  "musicStart": 20,
   "musicLibrary": [
     {
       "path": "assets/audio/wedding-song.mp3",
