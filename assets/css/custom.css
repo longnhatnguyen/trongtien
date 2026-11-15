@@ -1642,3 +1642,97 @@ body {
 @media (max-width: 640px) {
   .styles-module__WlSJYG__card-banner-inner { padding-top: 26px !important; }
 }
+
+/* ===== Envelope: monogram matches the main diamond logo ===== */
+.letter-monogram.mono-diamond {
+  position: relative;
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 70px; height: 70px;
+  margin: 0 auto 4px !important;
+  padding: 0 !important; border: 0 !important;
+  letter-spacing: 0 !important;
+}
+.letter-monogram.mono-diamond::before {
+  content: ""; position: absolute; inset: 12px;
+  border: 1px solid rgba(181, 86, 106, .45);
+  transform: rotate(45deg);
+}
+.mono-diamond .mono-l { font-family: 'Parisienne', cursive; font-weight: 400; font-size: 26px; color: #b5566a; line-height: 1; position: relative; }
+.mono-diamond .mono-amp { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 13px; color: #8f6f4e; margin: 0 2px; position: relative; }
+
+/* Wax seal: same script letters */
+.seal-mono { display: inline-flex; align-items: center; line-height: 1; }
+.seal-mono span { font-family: 'Parisienne', cursive; font-weight: 400; font-size: 17px; }
+.seal-mono i { font-family: 'Cormorant Garamond', Georgia, serif; font-style: normal; font-size: 10px; margin: 0 1px; opacity: .9; }
+
+/* ===== Opening: keep the rising letter clear of "THU HƯƠNG" ===== */
+.envelope-couple-names .env-name { line-height: 1.05 !important; }
+.envelope-couple-names .env-amp { margin: 0 0 2px !important; }
+.envelope-screen.is-opening .envelope-header { transform: translateY(-64px) !important; }
+.envelope-screen.is-opening .envelope-card-3d { transform: translateY(70px) !important; }
+.envelope-letter.slide-up { transform: translateY(-96px) scale(1.03) !important; }
+/* Button: its entrance animation (fill-mode both) was overriding the hide rule */
+.envelope-screen.is-opening .envelope-action { animation: none !important; opacity: 0 !important; transform: translateY(20px) !important; pointer-events: none; }
+
+/* ===== Envelope screen: softer type ===== */
+.envelope-eyebrow {
+  font-family: 'Lora', Georgia, serif !important;
+  font-style: italic;
+  font-weight: 400 !important;
+  text-transform: none !important;
+  letter-spacing: .08em !important;
+  font-size: 15px !important;
+  color: #b5566a !important;
+  margin-bottom: 8px !important;
+}
+.guest-label {
+  font-family: 'Lora', Georgia, serif !important;
+  font-style: italic;
+  font-weight: 400 !important;
+  text-transform: none !important;
+  letter-spacing: .03em !important;
+  font-size: 12.5px !important;
+  color: #b5566a !important;
+}
+.open-invitation-btn, .open-invitation-btn .btn-text {
+  font-family: 'Lora', Georgia, serif !important;
+  font-weight: 500 !important;
+  letter-spacing: .03em !important;
+}
+/* More air around the "&" between the names */
+.envelope-couple-names .env-name { line-height: 1.1 !important; }
+.envelope-couple-names .env-amp { margin: 8px 0 6px !important; }
+
+/* Countdown heading ("Our Next Chapter"): softer serif italic instead of uppercase sans */
+.styles-module__WlSJYG__card-countdown h3 {
+  font-family: 'Lora', Georgia, serif !important;
+  font-style: italic !important;
+  font-weight: 400 !important;
+  text-transform: none !important;
+  letter-spacing: .04em !important;
+  font-size: clamp(1.15rem, 5vw, 1.4rem) !important;
+  line-height: 1.5 !important;
+  color: #8f6f4e !important;
+}
+/* Countdown digits: thinner */
+.styles-module__WlSJYG__countdown-piece .styles-module__WlSJYG__value {
+  font-family: 'Lora', Georgia, serif !important;
+  font-weight: 400 !important;
+  font-variant-numeric: lining-nums tabular-nums;
+  letter-spacing: .02em;
+}
+
+/* ===== Lightbox: arrows always above the photo; compact on phones ===== */
+.lightbox-nav-btn, .lightbox-close, .lightbox-counter { z-index: 3; }
+.lightbox-img { position: relative; z-index: 1; touch-action: pan-y; user-select: none; -webkit-user-drag: none; }
+@media (max-width: 640px) {
+  .lightbox-img { max-width: 94vw; max-height: 78vh; }
+  .lightbox-nav-btn {
+    width: 38px; height: 38px;
+    background: rgba(20, 15, 18, .45);
+    border-color: rgba(255, 255, 255, .5);
+    backdrop-filter: blur(4px);
+  }
+  .lightbox-prev { left: max(8px, env(safe-area-inset-left, 0px)); }
+  .lightbox-next { right: max(8px, env(safe-area-inset-right, 0px)); }
+}

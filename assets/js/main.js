@@ -364,7 +364,8 @@ function playAudio() {
   // Envelope-open and first-gesture handlers can both fire: start only once
   if (audioPlaying || audioStarting) return;
   audioStarting = true;
-  weddingAudio.currentTime = Math.max(weddingAudio.currentTime, 7); // skip silence intro
+  const startAt = Math.max(0, Number(window.WEDDING && window.WEDDING.musicStart) || 0); // admin: phát từ giây thứ
+  weddingAudio.currentTime = Math.max(weddingAudio.currentTime, startAt);
   weddingAudio.play().finally(() => { audioStarting = false; }).then(() => {
     // User tapped "off" while the song was still loading -> respect that
     if (weddingAudio.paused) return;
@@ -376,7 +377,7 @@ function playAudio() {
       discBtn.closest('.audio-player-control')?.classList.remove('is-muted');
       discBtn.setAttribute('aria-pressed', 'true');
     }
-    showToast('🎵 Đang phát nhạc: Cùng Anh (Acoustic)');
+    showToast('🎵 Đang phát nhạc: ' + escapeHtml((window.WEDDING && window.WEDDING.musicTitle) || 'Cùng Anh (Acoustic)'));
   }).catch(() => {
     // Autoplay was blocked
   });
@@ -687,6 +688,20 @@ function initLightbox() {
       openLightbox(i < 0 ? 0 : i);
     });
   });
+
+  // Swipe left/right on the photo to change image (phones)
+  let swX = null, swY = 0;
+  lightbox.addEventListener('touchstart', (e) => {
+    if (e.touches.length !== 1) { swX = null; return; }
+    swX = e.touches[0].clientX; swY = e.touches[0].clientY;
+  }, { passive: true });
+  lightbox.addEventListener('touchend', (e) => {
+    if (swX === null) return;
+    const t = e.changedTouches[0];
+    const dx = t.clientX - swX, dy = t.clientY - swY;
+    swX = null;
+    if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.3) showImage(currentIndex + (dx < 0 ? 1 : -1));
+  }, { passive: true });
 
   if (prevBtn) prevBtn.addEventListener('click', () => showImage(currentIndex - 1));
   if (nextBtn) nextBtn.addEventListener('click', () => showImage(currentIndex + 1));

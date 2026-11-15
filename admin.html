@@ -39,6 +39,27 @@
   .photo .new { outline: 3px solid var(--accent); outline-offset: -3px; }
   .photo button { width: 100%; padding: 6px; font-size: 12px; }
   .hint { color: var(--muted); font-size: 13px; }
+  /* Save: spinner on the button, overlay with current step, toast result */
+  @keyframes spin { to { transform: rotate(360deg); } }
+  button.is-loading { position: relative; padding-left: 38px; cursor: wait; opacity: 1 !important; }
+  button.is-loading::before { content: ""; position: absolute; left: 14px; top: 50%; width: 14px; height: 14px; margin-top: -7px;
+    border: 2px solid rgba(255,255,255,.45); border-top-color: #fff; border-radius: 50%; animation: spin .8s linear infinite; }
+  #savingOverlay { position: fixed; inset: 0; z-index: 200; display: grid; place-items: center; background: rgba(45,35,38,.28);
+    backdrop-filter: blur(2px); opacity: 0; pointer-events: none; transition: opacity .2s; }
+  #savingOverlay.show { opacity: 1; pointer-events: auto; }
+  .saving-card { background: #fff; border-radius: 16px; padding: 22px 28px; min-width: 240px; max-width: 86vw; display: grid; justify-items: center; gap: 8px;
+    box-shadow: 0 18px 50px rgba(0,0,0,.18); text-align: center; }
+  .saving-card .spinner { width: 34px; height: 34px; border: 3px solid #f1dfe2; border-top-color: var(--accent); border-radius: 50%; animation: spin .8s linear infinite; }
+  .saving-card small { color: var(--muted); min-height: 1.2em; }
+  #toastBox { position: fixed; top: 16px; right: 16px; z-index: 210; display: grid; gap: 10px; max-width: min(360px, calc(100vw - 32px)); }
+  .toast { display: flex; gap: 10px; align-items: flex-start; background: #fff; border-radius: 12px; padding: 12px 14px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.14); border-left: 4px solid var(--ok); animation: toastIn .3s ease; transition: opacity .4s, transform .4s; }
+  .toast.err { border-left-color: var(--err); }
+  .toast.hide { opacity: 0; transform: translateX(20px); }
+  .toast .ico { flex: none; width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-weight: 700; font-size: 13px; background: var(--ok); }
+  .toast.err .ico { background: var(--err); }
+  .toast b { display: block; font-size: 14px; } .toast small { color: var(--muted); font-size: 13px; }
+  @keyframes toastIn { from { opacity: 0; transform: translateX(20px); } }
   .album-actions { display: flex; gap: 4px; }
   .album-actions button { flex: 1; padding: 5px 0; font-size: 13px; }
   .album-actions button:last-child { color: var(--err); }
@@ -152,10 +173,16 @@
   const justUploaded = {}; // photoKey -> dataUrl (preview only)
   const albumPending = {}; // 'pending:id' -> { blob, dataUrl, name } (new album photos not uploaded yet)
   const albumUploaded = {}; // uploaded path -> dataUrl (preview/thumbs while Pages rebuilds)
+  let musicPending = null;     // { file, url } new music not uploaded yet
+  let musicUploadedUrl = null; // object URL of the just-uploaded song (Pages needs ~1 min to serve it)
   const $ = (id) => document.getElementById(id);
   const statusEl = $('status');
 
-  function setStatus(msg, cls) { statusEl.textContent = msg; statusEl.className = cls || ''; }
+  function setStatus(msg, cls) {
+    statusEl.textContent = msg; statusEl.className = cls || '';
+    const step = document.getElementById('savingStep'); // mirror progress into the saving overlay
+    if (step) step.textContent = msg;
+  }
 
   // ---------- GitHub API ----------
   async function gh(path, opts = {}) {
@@ -357,6 +384,32 @@
       root.appendChild(c9);
     }
 
+    // ----- Background music -----
+    const cm = card('Nhạc nền', 'Chọn file nhạc (mp3, m4a…). Nhạc phát khi khách mở thiệp. Nên dùng file dưới 10MB để thiệp tải nhanh.');
+    cm.dataset.path = 'music';
+    const player = document.createElement('audio');
+    player.controls = true; player.preload = 'none'; player.style.width = '100%';
+    player.src = musicPending ? musicPending.url : (musicUploadedUrl || ('./' + (data.music || '')));
+    const fileName = document.createElement('p'); fileName.className = 'hint';
+    fileName.textContent = musicPending
+      ? `Bài mới (chưa lưu): ${musicPending.file.name} · ${(musicPending.file.size / 1048576).toFixed(1)}MB`
+      : `Đang dùng: ${(data.music || '').split('/').pop()}`;
+    const pickBtn = document.createElement('button'); pickBtn.type = 'button'; pickBtn.textContent = '🎵 Chọn bài khác';
+    pickBtn.addEventListener('click', () => { musicPicker.value = ''; musicPicker.click(); });
+    const startWrap = field('Phát từ giây thứ', 'musicStart', { type: 'number', placeholder: '0' });
+    const startInput = startWrap.querySelector('input'); startInput.min = '0'; startInput.step = '1';
+    startInput.addEventListener('input', () => { data.musicStart = Math.max(0, Number(startInput.value) || 0); });
+    const useNow = document.createElement('button'); useNow.type = 'button'; useNow.textContent = '⏱ Lấy vị trí đang nghe';
+    useNow.title = 'Bấm khi đang nghe thử để lấy đúng giây hiện tại';
+    useNow.addEventListener('click', () => {
+      const t = Math.floor(player.currentTime || 0);
+      startInput.value = t; data.musicStart = t; markDirty();
+    });
+    const rowBtns = document.createElement('div'); rowBtns.style.cssText = 'display:flex;gap:8px;flex-wrap:wrap;margin:10px 0';
+    rowBtns.append(pickBtn, useNow);
+    cm.append(player, fileName, rowBtns, grid([field('Tên bài hát (hiện trong thông báo khi phát)', 'musicTitle'), startWrap]));
+    root.appendChild(cm);
+
     // ----- Swipe album: variable number of photos -----
     if (!Array.isArray(data.album)) data.album = [];
     const ca = card(`Album ảnh lướt ngang (${data.album.length} ảnh)`, 'Thêm, xoá, đổi thứ tự ảnh. Có thể chọn nhiều ảnh một lúc.');
@@ -408,6 +461,23 @@
     root.appendChild(c8);
   }
 
+  // ----- Music editing -----
+  const musicPicker = document.createElement('input');
+  musicPicker.type = 'file'; musicPicker.accept = 'audio/*,.mp3,.m4a,.aac,.ogg,.wav'; musicPicker.hidden = true;
+  document.body.appendChild(musicPicker);
+  musicPicker.addEventListener('change', () => {
+    const file = musicPicker.files && musicPicker.files[0];
+    if (!file) return;
+    if (!/^audio\//.test(file.type) && !/\.(mp3|m4a|aac|ogg|wav)$/i.test(file.name)) { setStatus('File này không phải nhạc', 'err'); return; }
+    if (file.size > 40 * 1048576) { setStatus('File nhạc quá lớn (tối đa 40MB). Hãy chọn bản nhẹ hơn.', 'err'); return; }
+    if (musicPending) URL.revokeObjectURL(musicPending.url);
+    musicPending = { file, url: URL.createObjectURL(file) };
+    if (!data.musicTitle || data.musicTitle === 'Cùng Anh (Acoustic)') data.musicTitle = file.name.replace(/\.[^.]+$/, '');
+    data.musicStart = 0;
+    buildEditor(); markDirty();
+    $('editorView').querySelector('[data-path="music"]')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
   // ----- Album editing -----
   const albumPicker = document.createElement('input');
   albumPicker.type = 'file'; albumPicker.accept = 'image/*'; albumPicker.multiple = true; albumPicker.hidden = true;
@@ -452,8 +522,39 @@
   });
 
   // ---------- Save ----------
+  // Saving overlay (spinner + current step) and toast notifications
+  function showSaving(on) {
+    let ov = document.getElementById('savingOverlay');
+    if (!ov) {
+      ov = document.createElement('div');
+      ov.id = 'savingOverlay';
+      ov.setAttribute('role', 'status');
+      ov.setAttribute('aria-live', 'polite');
+      ov.innerHTML = '<div class="saving-card"><span class="spinner" aria-hidden="true"></span><b>Đang lưu &amp; đăng lên…</b><small id="savingStep"></small></div>';
+      document.body.appendChild(ov);
+    }
+    ov.classList.toggle('show', on);
+  }
+  function notify(type, title, msg) {
+    let box = document.getElementById('toastBox');
+    if (!box) { box = document.createElement('div'); box.id = 'toastBox'; document.body.appendChild(box); }
+    const t = document.createElement('div');
+    t.className = 'toast ' + type;
+    t.setAttribute('role', type === 'err' ? 'alert' : 'status');
+    t.innerHTML = '<span class="ico">' + (type === 'ok' ? '✓' : '!') + '</span><div><b></b><small></small></div>';
+    t.querySelector('b').textContent = title;
+    t.querySelector('small').textContent = msg || '';
+    box.appendChild(t);
+    const life = type === 'ok' ? 4200 : 7000;
+    setTimeout(() => t.classList.add('hide'), life);
+    setTimeout(() => t.remove(), life + 500);
+  }
+
   async function save() {
     const btn = $('saveBtn'); btn.disabled = true;
+    const label = btn.textContent;
+    btn.classList.add('is-loading'); btn.textContent = 'Đang lưu…';
+    showSaving(true);
     try {
       const keys = Object.keys(pending);
       for (let i = 0; i < keys.length; i++) {
@@ -464,6 +565,16 @@
         data.photos[k] = path;
         justUploaded[k] = p.dataUrl; // Pages needs ~1 min to serve the new file; keep preview showing it
         delete pending[k];
+      }
+      // New background music
+      if (musicPending) {
+        setStatus('Đang tải nhạc lên… (file lớn có thể mất vài chục giây)');
+        const ext = (musicPending.file.name.match(/\.([a-z0-9]+)$/i) || [, 'mp3'])[1].toLowerCase();
+        const path = `assets/audio/uploads/music-${Date.now()}.${ext}`;
+        await putFile(path, await blobToB64(musicPending.file), 'admin: đổi nhạc nền');
+        data.music = path;
+        musicUploadedUrl = musicPending.url;
+        musicPending = null;
       }
       // New album photos
       const albumIds = (data.album || []).filter(s => albumPending[s]);
@@ -491,11 +602,18 @@
       }
       dirty = false;
       setStatus('Đã lưu ✓ Đã lên live, site cập nhật sau khoảng 1–2 phút.', 'ok');
+      notify('ok', 'Đã lưu & đăng lên', 'Thiệp sẽ cập nhật sau khoảng 1–2 phút.');
       buildEditor();
       sendPreview();
     } catch (err) {
       setStatus('Lỗi: ' + err.message, 'err');
-    } finally { btn.disabled = false; }
+      notify('err', 'Chưa lưu được', err.message);
+    } finally {
+      btn.disabled = false;
+      btn.classList.remove('is-loading');
+      btn.textContent = label;
+      showSaving(false);
+    }
   }
 
   // ---------- Views ----------
