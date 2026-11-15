@@ -1736,3 +1736,13 @@ body {
   .lightbox-prev { left: max(8px, env(safe-area-inset-left, 0px)); }
   .lightbox-next { right: max(8px, env(safe-area-inset-right, 0px)); }
 }
+
+/* Bank app deeplink */
+.bank-app-btn{display:block;width:100%;margin-top:12px;padding:11px 14px;border:0;border-radius:999px;background:#b5536b;color:#fff;font-family:'Lora',serif;font-size:14px;cursor:pointer;box-shadow:0 6px 16px rgba(181,83,107,.25)}
+.bank-app-sheet{position:fixed;inset:0;z-index:130;background:rgba(40,20,28,.45);display:flex;align-items:flex-end;justify-content:center}
+.bank-app-panel{background:#fffaf8;width:100%;max-width:440px;border-radius:20px 20px 0 0;padding:18px 16px 22px;text-align:center;font-family:'Lora',serif;color:#7a3346}
+.bank-app-panel p{margin:0 0 12px;font-size:16px}
+.bank-app-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.bank-app-grid a{padding:10px 4px;border:1px solid #efd3da;border-radius:12px;background:#fff;color:#7a3346;font-size:12px;text-decoration:none}
+.bank-app-panel small{display:block;margin:12px 0 8px;opacity:.75}
+.bank-app-close{border:0;background:none;color:#b5536b;font-family:inherit;font-size:14px;cursor:pointer}
