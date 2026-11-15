@@ -9,7 +9,7 @@
   "tagline": "A lifetime of love starts here",
   "music": "assets/audio/uploads/music-1794744674583.mp3",
   "musicTitle": "I Do",
-  "musicStart": 32,
+  "musicStart": 0,
   "musicLibrary": [
     {
       "path": "assets/audio/wedding-song.mp3",
@@ -19,7 +19,7 @@
     {
       "path": "assets/audio/uploads/music-1794744674583.mp3",
       "title": "I Do",
-      "start": 32
+      "start": 0
     },
     {
       "path": "assets/audio/uploads/music-1794745505886.mp3",
