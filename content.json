@@ -6,7 +6,7 @@
   "dateText": "28.11.2026",
   "weddingDateTime": "2026-11-28T16:00",
   "heroTitle": "We're getting married",
-  "tagline": "Một tình yêu được khắc trên tim",
+  "tagline": "Một tình yêu được khắc trong tim",
   "music": "assets/audio/wedding-song.mp3",
   "parents": {
     "groomFather": "Vũ Trọng Vĩnh",
@@ -23,7 +23,7 @@
       "lunar": "(Tức ngày 20 tháng 10 năm Bính Ngọ)",
       "place": "Tư gia Nhà trai",
       "address": "Thôn Phương Man, xã Đông Thụy Anh, tỉnh Hưng Yên",
-      "mapUrl": "https://maps.app.goo.gl/QitUxBCeGotGJFvBA"
+      "mapUrl": "https://maps.app.goo.gl/NpZWA6aTgMxBjgK76"
     },
     "bride": {
       "title": "Lễ Thành Hôn",
@@ -33,7 +33,7 @@
       "lunar": "(Tức ngày 20 tháng 10 năm Bính Ngọ)",
       "place": "Tư gia Nhà gái",
       "address": "Thôn Cam Giá, xã Vĩnh Phú, tỉnh Phú Thọ",
-      "mapUrl": "https://maps.app.goo.gl/NpZWA6aTgMxBjgK76"
+      "mapUrl": "https://maps.app.goo.gl/QitUxBCeGotGJFvBA"
     }
   },
   "bank": {
@@ -50,11 +50,11 @@
   },
   "thankYou": "Cảm ơn bạn đã dành tình cảm cho chúng mình! Sự hiện diện của bạn là món quà quý giá nhất, khiến ngày trọng đại của chúng mình thêm trọn vẹn và đáng nhớ.",
   "photos": {
-    "heroCover": "assets/photos/hero-cover.jpg",
+    "heroCover": "assets/photos/uploads/heroCover-1794722796210.jpg",
     "envelopeCandid1": "assets/photos/envelope-candid-1.jpg",
     "envelopeCandid2": "assets/photos/envelope-candid-2.jpg",
     "saveTheDate": "assets/photos/save-the-date.jpg",
-    "groomPortrait": "assets/photos/groom-portrait.jpg",
+    "groomPortrait": "assets/photos/uploads/groomPortrait-1794723409628.jpg",
     "bridePortrait": "assets/photos/bride-portrait.jpg",
     "galleryTilted1": "assets/photos/gallery-tilted-1.jpg",
     "galleryTilted2": "assets/photos/gallery-tilted-2.jpg",
