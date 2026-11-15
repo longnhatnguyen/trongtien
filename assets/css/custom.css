@@ -1745,4 +1745,11 @@ body {
 .bank-app-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
 .bank-app-grid a{padding:10px 4px;border:1px solid #efd3da;border-radius:12px;background:#fff;color:#7a3346;font-size:12px;text-decoration:none}
 .bank-app-panel small{display:block;margin:12px 0 8px;opacity:.75}
-.bank-app-close{border:0;background:none;color:#b5536b;font-family:inherit;font-size:14px;cursor:pointer}
+.bank-app-close{display:inline-block;min-width:120px;padding:9px 22px;border:1px solid #b5536b;border-radius:999px;background:#fff;color:#b5536b;font-family:inherit;font-size:14px;cursor:pointer;box-shadow:0 4px 12px rgba(181,83,107,.15)}
+/* Bank app buttons: hover + press feedback */
+.bank-app-btn,.bank-app-grid a,.bank-app-close{transition:transform .18s ease,background-color .18s ease,color .18s ease,border-color .18s ease,box-shadow .18s ease;-webkit-tap-highlight-color:transparent}
+.bank-app-btn:hover{background:#a3445c;box-shadow:0 8px 20px rgba(181,83,107,.35);transform:translateY(-1px)}
+.bank-app-grid a:hover{border-color:#b5536b;background:#fdf0f3;box-shadow:0 4px 12px rgba(181,83,107,.18);transform:translateY(-2px)}
+.bank-app-close:hover{background:#b5536b;color:#fff}
+.bank-app-btn:active,.bank-app-grid a:active,.bank-app-close:active{transform:scale(.95);box-shadow:0 2px 6px rgba(181,83,107,.2)}
+.bank-app-grid a:active{background:#b5536b;color:#fff;border-color:#b5536b}
