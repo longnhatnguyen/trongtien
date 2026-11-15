@@ -642,7 +642,8 @@ function initLightbox() {
 
   function closeLightbox() {
     lightbox.classList.remove('active');
-    document.body.style.overflow = '';
+    // Keep the page locked if the gift box (or another modal) is still open underneath
+    document.body.style.overflow = document.querySelector('.modal-overlay.active') ? 'hidden' : '';
   }
 
   // Click on gallery photos
@@ -686,6 +687,18 @@ function initLightbox() {
       list = all;
       const i = all.indexOf(srcOf(el));
       openLightbox(i < 0 ? 0 : i);
+    });
+  });
+
+  // QR codes in the gift box: tap to enlarge (lightbox sits above the gift modal)
+  const qrs = Array.from(document.querySelectorAll('[data-ci="photos.qrGroom"], [data-ci="photos.qrBride"]'));
+  qrs.forEach((img, i) => {
+    img.style.cursor = 'pointer';
+    img.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      list = qrs.map(q => q.getAttribute('src'));
+      openLightbox(i);
     });
   });
 
