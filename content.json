@@ -83,7 +83,7 @@
     "t5": "Chạm để mở thiệp",
     "t6": "Nhạc nền sẽ tự động phát khi mở thiệp",
     "t7": "&",
-    "t8": "We will become\nHusband and Wife in",
+    "t8": "Our Next Chapter",
     "t9": "Save the Date",
     "t10": "Nhà trai",
     "t11": "Ông",
@@ -101,8 +101,8 @@
     "t31": "Cô dâu",
     "t32": "The",
     "t33": "Album",
-    "t34": "Of",
-    "t35": "Love",
+    "t34": "",
+    "t35": "",
     "t36": "November",
     "t37": "T2",
     "t38": "T3",
@@ -141,5 +141,18 @@
     "t87": "Lời chúc phúc *",
     "t88": "Gửi Lời Chúc Phúc 💌"
   },
-  "sheetUrl": "https://script.google.com/macros/s/AKfycbx_7EXFTKDvYOAmrn1OLgaTErCkGDukuzxoMbPaIVfJhoQuSDIsvCUAF2ESTXEA3VXr/exec"
+  "sheetUrl": "https://script.google.com/macros/s/AKfycbx_7EXFTKDvYOAmrn1OLgaTErCkGDukuzxoMbPaIVfJhoQuSDIsvCUAF2ESTXEA3VXr/exec",
+  "album": [
+    "assets/photos/uploads/album-mwhk91k8af2np.jpg",
+    "assets/photos/uploads/album-mwhk97yf3yekr.jpg",
+    "assets/photos/uploads/album-mwhk9htgk3kj2.jpg",
+    "assets/photos/uploads/album-mwhk9zwsgu3wd.jpg",
+    "assets/photos/uploads/album-mwhkcu6nguzbv.jpg",
+    "assets/photos/uploads/album-mwhki69cxxgk6.jpg",
+    "assets/photos/uploads/album-mwhkiuqc261ji.jpg",
+    "assets/photos/uploads/album-mwhkd3zkdrgcg.jpg",
+    "assets/photos/uploads/album-mwhkd9p7qxb33.jpg",
+    "assets/photos/uploads/album-mwhkdjua87dy7.jpg",
+    "assets/photos/uploads/album-mwhkdvmqdelcf.jpg"
+  ]
 }
