@@ -1638,3 +1638,7 @@ body {
   .mute-slash { width: 38px; height: 38px; }
   .mute-slash::before { width: 46px; height: 3px; margin: -1.5px 0 0 -23px; }
 }
+/* Hero title higher on phones (was close to the groom's head) */
+@media (max-width: 640px) {
+  .styles-module__WlSJYG__card-banner-inner { padding-top: 26px !important; }
+}

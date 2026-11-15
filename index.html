@@ -2,6 +2,27 @@
 <html lang="vi">
 <head>
   <meta charset="utf-8" />
+  <meta http-equiv="Cache-Control" content="no-cache, must-revalidate" />
+  <script>
+    /* Auto-refresh stale copies: GitHub Pages lets browsers keep this page ~10 min.
+       version.json is always fetched fresh; if it is newer than this page, reload once
+       with a new URL (keeps ?to=... etc.) so the browser must fetch the latest page. */
+    (function () {
+      var BUILD = '20261115-143140';
+      try {
+        fetch('version.json?t=' + Date.now(), { cache: 'no-store' })
+          .then(function (r) { return r.ok ? r.json() : null; })
+          .then(function (j) {
+            if (!j || !j.v || j.v === BUILD) return;
+            var u = new URL(location.href);
+            if (u.searchParams.get('_v') === j.v) return; // already tried once: avoid loops
+            u.searchParams.set('_v', j.v);
+            location.replace(u.toString());
+          })
+          .catch(function () {});
+      } catch (e) {}
+    })();
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>THIỆP MỜI CƯỚI TRỌNG TIẾN &amp; THU HƯƠNG</title>
   <meta name="title" content="THIỆP MỜI CƯỚI TRỌNG TIẾN &amp; THU HƯƠNG" />
@@ -30,9 +51,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Parisienne&family=Cormorant+Garamond:wght@500&family=Lora:ital,wght@0,400..700;1,400..700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
 
   <!-- Stylesheets -->
-  <link rel="stylesheet" href="assets/css/globals.css?v=4.0" />
-  <link rel="stylesheet" href="assets/css/graceful-04.css?v=4.0" />
-  <link rel="stylesheet" href="assets/css/custom.css?v=6.8" />
+  <link rel="stylesheet" href="assets/css/globals.css?v=20261115-143140" />
+  <link rel="stylesheet" href="assets/css/graceful-04.css?v=20261115-143140" />
+  <link rel="stylesheet" href="assets/css/custom.css?v=20261115-143140" />
 </head>
 <body class="site-module__FW66Kq__inter antialiased bg-background text-foreground overflow-x-hidden">
   
@@ -216,7 +237,7 @@ cùng gia đình chúng tôi</div></div><div class="styles-module__WlSJYG__revea
   </div>
 
   <!-- Interactive JavaScript Engine -->
-  <script src="assets/js/content.js?v=4.1"></script>
-<script src="assets/js/main.js?v=5.8"></script>
+  <script src="assets/js/content.js?v=20261115-143140"></script>
+<script src="assets/js/main.js?v=20261115-143140"></script>
 </body>
 </html>
