@@ -8,7 +8,7 @@
   "heroTitle": "Forever Begins With You",
   "tagline": "A lifetime of love starts here",
   "music": "assets/audio/uploads/music-1794745505886.mp3",
-  "musicTitle": "I Do",
+  "musicTitle": "Marry You",
   "musicStart": 1,
   "musicLibrary": [
     {
@@ -18,12 +18,12 @@
     },
     {
       "path": "assets/audio/uploads/music-1794744674583.mp3",
-      "title": "I Do (bản tải lần 1)",
+      "title": "I Do",
       "start": 20
     },
     {
       "path": "assets/audio/uploads/music-1794745505886.mp3",
-      "title": "I Do",
+      "title": "Marry You",
       "start": 1
     }
   ],
