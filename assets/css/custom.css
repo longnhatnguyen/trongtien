@@ -1753,3 +1753,17 @@ body {
 .bank-app-close:hover{background:#b5536b;color:#fff}
 .bank-app-btn:active,.bank-app-grid a:active,.bank-app-close:active{transform:scale(.95);box-shadow:0 2px 6px rgba(181,83,107,.2)}
 .bank-app-grid a:active{background:#b5536b;color:#fff;border-color:#b5536b}
+/* Gift modal fits one phone screen without scrolling */
+@media (max-width: 640px) {
+  #giftModal .modal-container { padding: 18px 16px 14px !important; max-height: 94dvh; }
+  #giftModal .modal-close-btn { top: 10px; right: 10px; width: 30px; height: 30px; }
+  #giftModal h3 { font-size: 28px !important; margin: 0 !important; }
+  #giftModal h3 + p { font-size: 12px !important; margin-bottom: 10px !important; line-height: 1.4; }
+  #giftModal .tab-switcher { margin-bottom: 10px; padding: 3px; }
+  #giftModal .tab-btn { padding: 7px 8px; font-size: 12.5px; white-space: nowrap; }
+  #giftModal .bank-card { padding: 10px; margin-bottom: 0; }
+  #giftModal .bank-qr-img { width: auto; height: min(30dvh, 190px); margin-bottom: 8px; padding: 3px; }
+  #giftModal .bank-info-line { padding: 5px 10px; margin-bottom: 5px; font-size: 13px; }
+  #giftModal .copy-btn { padding: 4px 10px; }
+  #giftModal .bank-app-btn { margin-top: 8px; padding: 9px 14px; }
+}
