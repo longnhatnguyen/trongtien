@@ -1559,3 +1559,29 @@ body {
 /* Final reveal: slower, softer fade */
 .envelope-screen { transition: opacity 1s cubic-bezier(.22, 1, .36, 1), transform 1s cubic-bezier(.22, 1, .36, 1) !important; }
 .envelope-screen.opened { transform: scale(1.04) !important; }
+
+/* ===== Envelope screen: names on two lines with script "&" (matches invitation name block) ===== */
+.envelope-couple-names {
+  white-space: normal !important;
+  display: flex; flex-direction: column; align-items: center;
+  font-size: inherit !important;
+  line-height: 1 !important;
+  text-shadow: none !important;
+}
+.envelope-couple-names .env-name {
+  font-family: 'Lora', Georgia, serif;
+  text-transform: uppercase;
+  font-weight: 400;
+  font-size: clamp(1.9rem, 8.5vw, 2.4rem);
+  letter-spacing: .02em;
+  color: #c0566d;
+  line-height: 1.15;
+}
+.envelope-couple-names .env-amp {
+  font-family: 'Great Vibes', cursive;
+  font-size: clamp(1.7rem, 7vw, 2.1rem);
+  color: #e07a8b;
+  line-height: 1;
+  margin: 2px 0 4px;
+}
+.envelope-header { margin-bottom: 20px !important; }
