@@ -1752,3 +1752,6 @@ body {
 }
 /* Compact single-line toasts */
 .toast-msg { padding: 7px 16px !important; font-size: 13px !important; gap: 6px !important; white-space: nowrap; max-width: calc(100vw - 32px); overflow: hidden; text-overflow: ellipsis; display: block !important; }
+
+/* Side switch sits between the couple names and the event card */
+.styles-module__WlSJYG__side-switch-wrap { margin: 18px 0 14px !important; }
