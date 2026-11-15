@@ -28,6 +28,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   // 6. Interactive Lightbox
   initLightbox();
 
+  // 6b. Album: horizontal swipe carousel (dots + active photo)
+  initAlbumCarousel();
+
   // 7. Interactive Gift Box Modal & QR Banking
   initGiftModal();
 
@@ -75,33 +78,17 @@ function initEnvelope() {
     // 1. Play wedding audio immediately upon direct user gesture
     playAudio();
 
-    // 2. Break wax seal with pop & golden fade
-    if (waxSeal) {
-      waxSeal.classList.add('broken');
-    }
+    // Staged opening: make room -> break seal -> flip flap -> letter rises -> fade to invitation
+    envelopeScreen.classList.add('is-opening');
 
-    // 3. Open top flap with 3D rotation
-    setTimeout(() => {
-      if (envelopeFlap) envelopeFlap.classList.add('opened');
-    }, 120);
+    setTimeout(() => { if (waxSeal) waxSeal.classList.add('broken'); }, 250);
+    setTimeout(() => { if (envelopeFlap) envelopeFlap.classList.add('opened'); }, 450);
+    setTimeout(() => { if (envelopeLetter) envelopeLetter.classList.add('slide-up'); }, 1000);
+    setTimeout(triggerConfettiBurst, 1150);
 
-    // 4. Slide letter up from inside envelope
-    setTimeout(() => {
-      if (envelopeLetter) envelopeLetter.classList.add('slide-up');
-    }, 380);
-
-    // 5. Trigger celebratory confetti burst
-    triggerConfettiBurst();
-
-    // 6. Smoothly fade out envelope screen to reveal main invitation
-    setTimeout(() => {
-      envelopeScreen.classList.add('opened');
-    }, 850);
-
-    // 7. Hide completely to allow full page scrolling and interaction
-    setTimeout(() => {
-      envelopeScreen.style.display = 'none';
-    }, 1600);
+    // Let the guest see the letter for a moment, then reveal the invitation
+    setTimeout(() => { envelopeScreen.classList.add('opened'); }, 2100);
+    setTimeout(() => { envelopeScreen.style.display = 'none'; }, 3150);
   }
 
   if (openBtn) openBtn.addEventListener('click', handleOpenEnvelope);
@@ -170,6 +157,120 @@ function initGuestName() {
     const W = window.WEDDING || { groomName: 'Trọng Tiến', brideName: 'Thu Hương' };
     document.title = `Thiệp Mời Cưới ${W.groomName} & ${W.brideName} · Kính mời: ${formatted}`;
   }
+}
+
+/* ==========================================================
+   ALBUM CAROUSEL (scroll-snap, iPhone-like swipe)
+   ========================================================== */
+function initAlbumCarousel() {
+  const track = document.querySelector('.styles-module__WlSJYG__photo-grid');
+  if (!track) return;
+  const slides = Array.from(track.querySelectorAll('.styles-module__WlSJYG__photo'));
+  if (slides.length < 2) return;
+
+  const dots = document.createElement('div');
+  dots.className = 'album-dots';
+  slides.forEach((_, i) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.setAttribute('aria-label', `Ảnh ${i + 1}`);
+    dots.appendChild(b);
+  });
+  track.after(dots);
+
+  function setActive(i) {
+    slides.forEach((s, k) => s.classList.toggle('is-active', k === i));
+    Array.from(dots.children).forEach((d, k) => d.classList.toggle('on', k === i));
+  }
+
+  // App-switcher look: cards pulled toward the center and stacked,
+  // right-hand cards on top (like iPhone multitasking). GPU-only: translate3d/scale + overlay opacity.
+  const ease = t => t * t * (3 - 2 * t); // smoothstep
+  let geo = [];
+  function measure() { geo = slides.map(s => ({ c: s.offsetLeft + s.offsetWidth / 2, w: s.offsetWidth || 1 })); }
+  let raf = 0;
+  function render() {
+    raf = 0;
+    const center = track.scrollLeft + track.clientWidth / 2;
+    let best = 0, dist = Infinity;
+    slides.forEach((s, i) => {
+      const d = (geo[i].c - center) / geo[i].w;      // -1 one card left, +1 one card right
+      const a = Math.min(Math.abs(d), 2.5);
+      const k = ease(Math.min(a, 1)) + Math.max(0, a - 1) * 0.5;
+      const shift = (d < 0 ? -1 : 1) * k * (d < 0 ? 40 : 14); // % of own width
+      const scale = 1 - k * 0.08;
+      s.style.setProperty('transform', 'translate3d(' + (-shift).toFixed(2) + '%,0,0) scale(' + scale.toFixed(4) + ')', 'important');
+      s.style.zIndex = String(100 + i);
+      s.style.setProperty('--dim', d < 0 ? Math.min(k * 0.32, 0.5).toFixed(3) : '0');
+      if (Math.abs(d) < dist) { dist = Math.abs(d); best = i; }
+    });
+    setActive(best);
+  }
+  const schedule = () => { if (!raf) raf = requestAnimationFrame(render); };
+  track.addEventListener('scroll', schedule, { passive: true });
+  window.addEventListener('resize', () => { measure(); schedule(); });
+
+  // Smooth eased scroll to a card (used for snap after drag and for dots)
+  let anim = 0;
+  function glideTo(i, ms) {
+    i = Math.max(0, Math.min(slides.length - 1, i));
+    const from = track.scrollLeft;
+    const to = geo[i].c - track.clientWidth / 2;
+    const t0 = performance.now(), dur = ms || 1100;
+    cancelAnimationFrame(anim);
+    track.classList.add('is-dragging'); // disable native snap while animating
+    const step = now => {
+      const p = Math.min(1, (now - t0) / dur);
+      const e = 1 - Math.pow(1 - p, 3); // easeOutCubic: gentler start than quart
+      track.scrollLeft = from + (to - from) * e;
+      if (p < 1) anim = requestAnimationFrame(step);
+      else track.classList.remove('is-dragging');
+    };
+    anim = requestAnimationFrame(step);
+  }
+  Array.from(dots.children).forEach((d, i) => d.addEventListener('click', () => glideTo(i)));
+
+  // Drag + flick for mouse AND touch (CSS touch-action: pan-y keeps vertical page scroll native).
+  // Native touch momentum can't be slowed, so momentum is computed here: a fast flick still
+  // travels several cards, but the glide is slower and softer.
+  let down = false, startX = 0, startLeft = 0, moved = 0, lastX = 0, lastT = 0, vel = 0;
+  track.addEventListener('pointerdown', (e) => {
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    cancelAnimationFrame(anim);
+    down = true; moved = 0; startX = lastX = e.clientX; startLeft = track.scrollLeft; lastT = performance.now(); vel = 0;
+    track.classList.add('is-dragging');
+  });
+  window.addEventListener('pointermove', (e) => {
+    if (!down) return;
+    const now = performance.now();
+    const dx = e.clientX - startX;
+    moved = Math.max(moved, Math.abs(dx));
+    vel = 0.8 * vel + 0.2 * ((e.clientX - lastX) / Math.max(1, now - lastT)); // px/ms, smoothed
+    lastX = e.clientX; lastT = now;
+    track.scrollLeft = startLeft - dx * 0.85; // slightly slower than the finger
+  });
+  function release() {
+    if (!down) return;
+    down = false;
+    const nearest = x => geo.reduce((b, g, i) => (Math.abs(g.c - x) < Math.abs(geo[b].c - x) ? i : b), 0);
+    const half = track.clientWidth / 2;
+    if (performance.now() - lastT > 90) vel = 0;           // finger paused before lifting: no flick
+    const startIdx = nearest(startLeft + half);
+    let target = nearest(track.scrollLeft - vel * 190 + half); // momentum: faster flick -> more cards
+    if (target === startIdx && Math.abs(vel) > 0.3) target = startIdx + (vel < 0 ? 1 : -1);
+    target = Math.max(0, Math.min(slides.length - 1, target));
+    const cards = Math.abs(target - nearest(track.scrollLeft + half)) + 1;
+    glideTo(target, Math.min(1100 + cards * 420, 2800));   // longer trip = longer, slower glide
+  }
+  window.addEventListener('pointerup', release);
+  window.addEventListener('pointercancel', release);
+  // A drag must not open the lightbox
+  track.addEventListener('click', (e) => {
+    if (moved > 6) { e.stopPropagation(); e.preventDefault(); moved = 0; }
+  }, true);
+
+  measure();
+  render();
 }
 
 /* ==========================================================
@@ -523,6 +624,29 @@ function initLightbox() {
 /* ==========================================================
    7. INTERACTIVE GIFT MODAL & VIETQR
    ========================================================== */
+// Sparkles + petals radiating from the gift box
+function giftBurst(anchor) {
+  const host = anchor.parentElement || anchor;
+  if (getComputedStyle(host).position === 'static') host.style.position = 'relative';
+  const layer = document.createElement('div');
+  layer.className = 'gift-burst';
+  const N = 18;
+  for (let i = 0; i < N; i++) {
+    const p = document.createElement('span');
+    const petal = i % 3 === 0;
+    p.className = petal ? 'gift-petal' : 'gift-spark';
+    const ang = (Math.PI * 2 * i) / N + (Math.random() - 0.5) * 0.4;
+    const dist = 70 + Math.random() * 70;
+    p.style.setProperty('--x', `${Math.cos(ang) * dist}px`);
+    p.style.setProperty('--y', `${Math.sin(ang) * dist - 30}px`);
+    p.style.setProperty('--r', `${Math.round(Math.random() * 360)}deg`);
+    p.style.setProperty('--d', `${Math.round(Math.random() * 120)}ms`);
+    layer.appendChild(p);
+  }
+  host.appendChild(layer);
+  setTimeout(() => layer.remove(), 1400);
+}
+
 function initGiftModal() {
   const giftModal = document.getElementById('giftModal');
   const openGiftBtn = document.querySelector('.styles-module__WlSJYG__present-box button');
@@ -530,9 +654,27 @@ function initGiftModal() {
 
   if (!giftModal || !openGiftBtn) return;
 
+  let opening = false;
   openGiftBtn.addEventListener('click', () => {
-    giftModal.classList.add('active');
-    document.body.style.overflow = 'hidden';
+    if (opening) return;
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const openModal = () => {
+      giftModal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    };
+    if (reduce) { openModal(); return; }
+
+    // Gentle "unwrap": wiggle -> lift with glow -> sparkles & petals burst out, then show the modal
+    opening = true;
+    openGiftBtn.classList.remove('gift-opening');
+    void openGiftBtn.offsetWidth;
+    openGiftBtn.classList.add('gift-opening');
+    setTimeout(() => giftBurst(openGiftBtn), 380);
+    setTimeout(() => {
+      openModal();
+      openGiftBtn.classList.remove('gift-opening');
+      opening = false;
+    }, 1050);
   });
 
   if (closeGiftBtn) {
@@ -673,7 +815,7 @@ function initGuestbook() {
       const msgInput = document.getElementById('wishMessageInput');
 
       if (!nameInput.value.trim() || !msgInput.value.trim()) {
-        alert('Vui lòng nhập Họ tên và Lời chúc của bạn nhé!');
+        showToast('✍️ Vui lòng nhập họ tên và lời chúc của bạn nhé');
         return;
       }
 
@@ -760,8 +902,7 @@ function initRSVP() {
     submitBtn.addEventListener('click', () => {
       const name = nameInput ? nameInput.value.trim() : '';
       if (!name) {
-        alert('Vui lòng nhập Họ và tên của bạn nhé!');
-        if (nameInput) nameInput.focus();
+        showFieldError(nameInput, 'Vui lòng nhập họ và tên của bạn nhé');
         return;
       }
 
@@ -882,6 +1023,34 @@ function initCurtains() {
 /* ==========================================================
    HELPERS
    ========================================================== */
+// Inline, on-brand validation message (replaces the browser's alert box)
+function showFieldError(input, msg) {
+  if (!input) { showToast(msg); return; }
+  const wrap = input.parentElement;
+  let tip = wrap.querySelector('.field-error-msg');
+  if (!tip) {
+    tip = document.createElement('div');
+    tip.className = 'field-error-msg';
+    tip.setAttribute('role', 'alert');
+    input.insertAdjacentElement('afterend', tip);
+  }
+  tip.textContent = msg;
+  input.classList.remove('field-error');
+  void input.offsetWidth; // restart shake animation
+  input.classList.add('field-error');
+  input.setAttribute('aria-invalid', 'true');
+  input.focus({ preventScroll: true });
+  input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  const clear = () => {
+    if (!input.value.trim()) return;
+    input.classList.remove('field-error');
+    input.removeAttribute('aria-invalid');
+    tip.remove();
+    input.removeEventListener('input', clear);
+  };
+  input.addEventListener('input', clear);
+}
+
 function showToast(msg) {
   const container = document.getElementById('toast-container');
   if (!container) return;

@@ -66,7 +66,6 @@
     "gallery6": "assets/photos/gallery-6.jpg",
     "gallery7": "assets/photos/gallery-7.jpg",
     "gallery8": "assets/photos/gallery-8.jpg",
-    "guestbookBg": "assets/photos/guestbook-bg.jpg",
     "footerBg": "assets/photos/footer-bg.jpg",
     "qrGroom": "assets/photos/qr-groom.png",
     "qrBride": "assets/photos/qr-bride.png",
@@ -111,9 +110,6 @@
     "t41": "T6",
     "t42": "T7",
     "t43": "CN",
-    "t57": "Sổ lưu bút",
-    "t58": "Ký tên và gửi những lời chúc tốt đẹp nhất đến cô dâu chú rể trong ngày trọng đại.",
-    "t59": "Những dấu yêu ở lại",
     "t61": "Xác nhận tham dự",
     "t62": "Trân trọng đón tiếp!",
     "t63": "Vui lòng hồi âm sớm để việc đón tiếp được chuẩn bị chu đáo nhất.",
@@ -139,7 +135,8 @@
     "t85": "Nhà gái",
     "t86": "Bạn chung",
     "t87": "Lời chúc phúc *",
-    "t88": "Gửi Lời Chúc Phúc 💌"
+    "t88": "Gửi Lời Chúc Phúc 💌",
+    "familyTitle": "Hai Bên Gia Đình"
   },
   "sheetUrl": "https://script.google.com/macros/s/AKfycbx_7EXFTKDvYOAmrn1OLgaTErCkGDukuzxoMbPaIVfJhoQuSDIsvCUAF2ESTXEA3VXr/exec"
 }
