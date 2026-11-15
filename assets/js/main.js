@@ -160,13 +160,16 @@ function initGuestName() {
 }
 
 /* ==========================================================
-   ALBUM CAROUSEL (scroll-snap, iPhone-like swipe)
+   ALBUM CAROUSEL (transform-only, iPhone app-switcher style)
    ========================================================== */
 function initAlbumCarousel() {
+  // Transform-only carousel (no native scrolling): every card is positioned from one
+  // float `pos` and redrawn in the same frame as the finger -> no lag, no snap jump.
   const track = document.querySelector('.styles-module__WlSJYG__photo-grid');
   if (!track) return;
   const slides = Array.from(track.querySelectorAll('.styles-module__WlSJYG__photo'));
   if (slides.length < 2) return;
+  track.classList.add('album-js');
 
   const dots = document.createElement('div');
   dots.className = 'album-dots';
@@ -174,93 +177,84 @@ function initAlbumCarousel() {
     const b = document.createElement('button');
     b.type = 'button';
     b.setAttribute('aria-label', `Ảnh ${i + 1}`);
+    b.addEventListener('click', () => glideTo(i));
     dots.appendChild(b);
   });
   track.after(dots);
 
-  function setActive(i) {
-    slides.forEach((s, k) => s.classList.toggle('is-active', k === i));
-    Array.from(dots.children).forEach((d, k) => d.classList.toggle('on', k === i));
-  }
-
-  // App-switcher look: cards pulled toward the center and stacked,
-  // right-hand cards on top (like iPhone multitasking). GPU-only: translate3d/scale + overlay opacity.
+  const last = slides.length - 1;
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const ease = t => t * t * (3 - 2 * t); // smoothstep
-  let geo = [];
-  function measure() { geo = slides.map(s => ({ c: s.offsetLeft + s.offsetWidth / 2, w: s.offsetWidth || 1 })); }
-  let raf = 0;
+  let w = slides[0].offsetWidth || 1;   // card width = spacing between card centers
+  let pos = 0;                          // current position, in cards (0 = first card centered)
+  let active = -1;
+
   function render() {
-    raf = 0;
-    const center = track.scrollLeft + track.clientWidth / 2;
-    let best = 0, dist = Infinity;
     slides.forEach((s, i) => {
-      const d = (geo[i].c - center) / geo[i].w;      // -1 one card left, +1 one card right
+      const d = i - pos;                       // <0: card is left of center
       const a = Math.min(Math.abs(d), 2.5);
       const k = ease(Math.min(a, 1)) + Math.max(0, a - 1) * 0.5;
-      const shift = (d < 0 ? -1 : 1) * k * (d < 0 ? 40 : 14); // % of own width
+      const tuck = (d < 0 ? -1 : 1) * k * (d < 0 ? 0.40 : 0.14); // fraction of card width
+      const tx = -pos * w - tuck * w;
       const scale = 1 - k * 0.08;
-      s.style.setProperty('transform', 'translate3d(' + (-shift).toFixed(2) + '%,0,0) scale(' + scale.toFixed(4) + ')', 'important');
+      s.style.setProperty('transform', 'translate3d(' + tx.toFixed(1) + 'px,0,0) scale(' + scale.toFixed(4) + ')', 'important');
       s.style.zIndex = String(100 + i);
       s.style.setProperty('--dim', d < 0 ? Math.min(k * 0.32, 0.5).toFixed(3) : '0');
-      if (Math.abs(d) < dist) { dist = Math.abs(d); best = i; }
     });
-    setActive(best);
+    const i = clamp(Math.round(pos), 0, last);
+    if (i !== active) {
+      active = i;
+      slides.forEach((s, k) => s.classList.toggle('is-active', k === i));
+      Array.from(dots.children).forEach((d, k) => d.classList.toggle('on', k === i));
+    }
   }
-  const schedule = () => { if (!raf) raf = requestAnimationFrame(render); };
-  track.addEventListener('scroll', schedule, { passive: true });
-  window.addEventListener('resize', () => { measure(); schedule(); });
 
-  // Smooth eased scroll to a card (used for snap after drag and for dots)
+  // Eased animation of `pos` to a card
   let anim = 0;
   function glideTo(i, ms) {
-    i = Math.max(0, Math.min(slides.length - 1, i));
-    const from = track.scrollLeft;
-    const to = geo[i].c - track.clientWidth / 2;
-    const t0 = performance.now(), dur = ms || 1100;
+    i = clamp(i, 0, last);
     cancelAnimationFrame(anim);
-    track.classList.add('is-dragging'); // disable native snap while animating
+    const from = pos, to = i, t0 = performance.now();
+    const dur = ms || Math.min(650 + Math.abs(to - from) * 260, 1600);
     const step = now => {
       const p = Math.min(1, (now - t0) / dur);
-      const e = 1 - Math.pow(1 - p, 3); // easeOutCubic: gentler start than quart
-      track.scrollLeft = from + (to - from) * e;
+      pos = from + (to - from) * (1 - Math.pow(1 - p, 3)); // easeOutCubic
+      render();
       if (p < 1) anim = requestAnimationFrame(step);
-      else track.classList.remove('is-dragging');
     };
     anim = requestAnimationFrame(step);
   }
-  Array.from(dots.children).forEach((d, i) => d.addEventListener('click', () => glideTo(i)));
 
-  // Drag + flick for mouse AND touch (CSS touch-action: pan-y keeps vertical page scroll native).
-  // Native touch momentum can't be slowed, so momentum is computed here: a fast flick still
-  // travels several cards, but the glide is slower and softer.
-  let down = false, startX = 0, startLeft = 0, moved = 0, lastX = 0, lastT = 0, vel = 0;
+  // Drag (mouse + touch). touch-action: pan-y keeps vertical page scrolling native.
+  let down = false, startX = 0, startY = 0, startPos = 0, moved = 0, lastX = 0, lastT = 0, vel = 0, locked = null;
   track.addEventListener('pointerdown', (e) => {
     if (e.pointerType === 'mouse' && e.button !== 0) return;
     cancelAnimationFrame(anim);
-    down = true; moved = 0; startX = lastX = e.clientX; startLeft = track.scrollLeft; lastT = performance.now(); vel = 0;
-    track.classList.add('is-dragging');
+    down = true; moved = 0; locked = null; vel = 0;
+    startX = lastX = e.clientX; startY = e.clientY; startPos = pos; lastT = performance.now();
   });
   window.addEventListener('pointermove', (e) => {
     if (!down) return;
+    const dx = e.clientX - startX, dy = e.clientY - startY;
+    if (locked === null && (Math.abs(dx) > 6 || Math.abs(dy) > 6)) locked = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
+    if (locked !== 'x') return;
     const now = performance.now();
-    const dx = e.clientX - startX;
     moved = Math.max(moved, Math.abs(dx));
-    vel = 0.8 * vel + 0.2 * ((e.clientX - lastX) / Math.max(1, now - lastT)); // px/ms, smoothed
+    vel = 0.75 * vel + 0.25 * ((e.clientX - lastX) / Math.max(1, now - lastT)); // px/ms
     lastX = e.clientX; lastT = now;
-    track.scrollLeft = startLeft - dx * 0.85; // slightly slower than the finger
+    let p = startPos - dx / w;
+    if (p < 0) p = p * 0.35; else if (p > last) p = last + (p - last) * 0.35; // rubber-band at the ends
+    pos = p;
+    render(); // same frame as the finger
   });
   function release() {
     if (!down) return;
     down = false;
-    const nearest = x => geo.reduce((b, g, i) => (Math.abs(g.c - x) < Math.abs(geo[b].c - x) ? i : b), 0);
-    const half = track.clientWidth / 2;
-    if (performance.now() - lastT > 90) vel = 0;           // finger paused before lifting: no flick
-    const startIdx = nearest(startLeft + half);
-    let target = nearest(track.scrollLeft - vel * 190 + half); // momentum: faster flick -> more cards
-    if (target === startIdx && Math.abs(vel) > 0.3) target = startIdx + (vel < 0 ? 1 : -1);
-    target = Math.max(0, Math.min(slides.length - 1, target));
-    const cards = Math.abs(target - nearest(track.scrollLeft + half)) + 1;
-    glideTo(target, Math.min(1100 + cards * 420, 2800));   // longer trip = longer, slower glide
+    if (locked !== 'x') { glideTo(Math.round(pos), 400); return; }
+    if (performance.now() - lastT > 90) vel = 0;        // finger rested before lifting: no flick
+    let target = Math.round(pos - (vel * 190) / w);    // fast flick travels several cards, but gently
+    if (target === Math.round(startPos) && Math.abs(vel) > 0.3) target += vel < 0 ? 1 : -1;
+    glideTo(target);
   }
   window.addEventListener('pointerup', release);
   window.addEventListener('pointercancel', release);
@@ -269,7 +263,7 @@ function initAlbumCarousel() {
     if (moved > 6) { e.stopPropagation(); e.preventDefault(); moved = 0; }
   }, true);
 
-  measure();
+  window.addEventListener('resize', () => { w = slides[0].offsetWidth || w; render(); });
   render();
 }
 
@@ -339,6 +333,8 @@ function playAudio() {
     if (discBtn) {
       discBtn.classList.remove('paused');
       discBtn.classList.add('spinning');
+      discBtn.closest('.audio-player-control')?.classList.remove('is-muted');
+      discBtn.setAttribute('aria-pressed', 'true');
     }
     showToast('🎵 Đang phát nhạc: Cùng Anh (Acoustic)');
   }).catch(() => {
@@ -352,6 +348,8 @@ function pauseAudio() {
   const discBtn = document.getElementById('vinylDiscBtn');
   if (discBtn) {
     discBtn.classList.add('paused');
+    discBtn.closest('.audio-player-control')?.classList.add('is-muted');
+    discBtn.setAttribute('aria-pressed', 'false');
   }
   showToast('🔇 Đã tắt nhạc · chạm đĩa để bật lại');
 }

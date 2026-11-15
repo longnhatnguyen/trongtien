@@ -1585,3 +1585,37 @@ body {
   margin: 2px 0 4px;
 }
 .envelope-header { margin-bottom: 20px !important; }
+
+/* ===== Album v4: transform-only carousel (JS positions cards; no native scroll / snap) ===== */
+.styles-module__WlSJYG__photo-grid.album-js {
+  overflow: hidden !important;
+  scroll-snap-type: none !important;
+  scroll-behavior: auto !important;
+  touch-action: pan-y;
+}
+.styles-module__WlSJYG__photo-grid.album-js .styles-module__WlSJYG__photo {
+  scroll-snap-align: none !important;
+  box-shadow: 0 8px 20px rgba(40, 20, 28, .22) !important; /* lighter shadow = cheaper on phones */
+  contain: paint;
+}
+
+/* ===== Music muted: diagonal slash over the disc (does not rotate with it) ===== */
+.audio-player-control { position: fixed; }
+.mute-slash {
+  position: absolute; right: 0; bottom: 0;
+  width: 52px; height: 52px; border-radius: 50%;
+  pointer-events: none; z-index: 2;
+  opacity: 0; transform: scale(.6);
+  transition: opacity .25s ease, transform .3s cubic-bezier(.34, 1.56, .64, 1);
+}
+.mute-slash::before {
+  content: ""; position: absolute; left: 50%; top: 50%;
+  width: 62px; height: 4px; margin: -2px 0 0 -31px;
+  border-radius: 4px;
+  background: #b5566a;
+  box-shadow: 0 0 0 2px #fff;
+  transform: rotate(-45deg);
+}
+.audio-player-control.is-muted .mute-slash { opacity: 1; transform: scale(1); }
+.audio-player-control.is-muted .vinyl-disc-btn { filter: grayscale(.55) brightness(.97); }
+.audio-player-control.is-muted .sound-waves { opacity: 0; }
