@@ -7,7 +7,9 @@
   "weddingDateTime": "2026-11-28T16:00",
   "heroTitle": "Forever Begins With You",
   "tagline": "A lifetime of love starts here",
-  "music": "assets/audio/wedding-song.mp3",
+  "music": "assets/audio/uploads/music-1794744674583.mp3",
+  "musicTitle": "I Do",
+  "musicStart": 20,
   "parents": {
     "groomFather": "Vũ Trọng Vĩnh",
     "groomMother": "Vũ Thị Tuyết",
@@ -81,7 +83,6 @@
     "t3": "Trân trọng kính mời",
     "t4": "Quý vị & Gia đình",
     "t5": "Chạm để mở thiệp",
-    "t6": "",
     "t7": "&",
     "t8": "Our Next Chapter",
     "t9": "Save the Date",
