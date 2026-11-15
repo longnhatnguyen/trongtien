@@ -58,14 +58,14 @@
     "bridePortrait": "assets/photos/uploads/bridePortrait-1794723922779.jpg",
     "galleryTilted1": "assets/photos/uploads/galleryTilted1-1794725845413.jpg",
     "galleryTilted2": "assets/photos/uploads/galleryTilted2-1794725577365.jpg",
-    "gallery1": "assets/photos/uploads/gallery1-1794726217938.jpg",
-    "gallery2": "assets/photos/uploads/gallery2-1794726386150.jpg",
-    "gallery3": "assets/photos/uploads/gallery3-1794726400496.jpg",
-    "gallery4": "assets/photos/uploads/gallery4-1794726458270.jpg",
-    "gallery5": "assets/photos/uploads/gallery5-1794726634615.jpg",
-    "gallery6": "assets/photos/uploads/gallery6-1794726639016.jpg",
+    "gallery1": "assets/photos/uploads/gallery1-1794730119857.jpg",
+    "gallery2": "assets/photos/uploads/gallery2-1794728288012.jpg",
+    "gallery3": "assets/photos/uploads/gallery3-1794728298234.jpg",
+    "gallery4": "assets/photos/uploads/gallery4-1794728328018.jpg",
+    "gallery5": "assets/photos/uploads/gallery5-1794730129144.jpg",
+    "gallery6": "assets/photos/uploads/gallery6-1794730133985.jpg",
     "gallery7": "assets/photos/uploads/gallery7-1794727235950.jpg",
-    "gallery8": "assets/photos/uploads/gallery8-1794727855246.jpg",
+    "gallery8": "assets/photos/uploads/gallery8-1794730083786.jpg",
     "guestbookBg": "assets/photos/uploads/guestbookBg-1794726333451.jpg",
     "footerBg": "assets/photos/uploads/footerBg-1794725642331.jpg",
     "qrGroom": "assets/photos/qr-groom.png",
@@ -141,16 +141,5 @@
     "t87": "Lời chúc phúc *",
     "t88": "Gửi Lời Chúc Phúc 💌"
   },
-  "sheetUrl": "https://script.google.com/macros/s/AKfycbx_7EXFTKDvYOAmrn1OLgaTErCkGDukuzxoMbPaIVfJhoQuSDIsvCUAF2ESTXEA3VXr/exec",
-  "album": [
-    "assets/photos/uploads/gallery1-1794726217938.jpg",
-    "assets/photos/uploads/gallery2-1794726386150.jpg",
-    "assets/photos/uploads/gallery3-1794726400496.jpg",
-    "assets/photos/uploads/gallery4-1794726458270.jpg",
-    "assets/photos/uploads/gallery5-1794726634615.jpg",
-    "assets/photos/uploads/gallery6-1794726639016.jpg",
-    "assets/photos/uploads/gallery7-1794727235950.jpg",
-    "assets/photos/uploads/gallery8-1794727855246.jpg",
-    "assets/photos/uploads/album-mwhizawj5dr7r.jpg"
-  ]
+  "sheetUrl": "https://script.google.com/macros/s/AKfycbx_7EXFTKDvYOAmrn1OLgaTErCkGDukuzxoMbPaIVfJhoQuSDIsvCUAF2ESTXEA3VXr/exec"
 }
