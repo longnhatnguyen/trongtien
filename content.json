@@ -10,6 +10,23 @@
   "music": "assets/audio/uploads/music-1794745505886.mp3",
   "musicTitle": "I Do",
   "musicStart": 1,
+  "musicLibrary": [
+    {
+      "path": "assets/audio/wedding-song.mp3",
+      "title": "Cùng Anh (Acoustic)",
+      "start": 7
+    },
+    {
+      "path": "assets/audio/uploads/music-1794744674583.mp3",
+      "title": "I Do (bản tải lần 1)",
+      "start": 20
+    },
+    {
+      "path": "assets/audio/uploads/music-1794745505886.mp3",
+      "title": "I Do",
+      "start": 1
+    }
+  ],
   "parents": {
     "groomFather": "Vũ Trọng Vĩnh",
     "groomMother": "Vũ Thị Tuyết",

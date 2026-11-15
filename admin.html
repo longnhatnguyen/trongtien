@@ -60,6 +60,13 @@
   .toast.err .ico { background: var(--err); }
   .toast b { display: block; font-size: 14px; } .toast small { color: var(--muted); font-size: 13px; }
   @keyframes toastIn { from { opacity: 0; transform: translateX(20px); } }
+  .song-list { display: grid; gap: 8px; }
+  .song { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; background: #fff; }
+  .song.current { border-color: var(--accent); background: #fdf6f7; }
+  .song-name { flex: 1; min-width: 0; }
+  .song-name b { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
+  .song-name small { color: var(--muted); font-size: 12px; }
+  .song button { padding: 6px 10px; font-size: 13px; white-space: nowrap; }
   .album-actions { display: flex; gap: 4px; }
   .album-actions button { flex: 1; padding: 5px 0; font-size: 13px; }
   .album-actions button:last-child { color: var(--err); }
@@ -175,6 +182,8 @@
   const albumUploaded = {}; // uploaded path -> dataUrl (preview/thumbs while Pages rebuilds)
   let musicPending = null;     // { file, url } new music not uploaded yet
   let musicUploadedUrl = null; // object URL of the just-uploaded song (Pages needs ~1 min to serve it)
+  let musicUploadedPath = null;
+  let audioFiles = [];         // audio files found in the repo (assets/audio, assets/audio/uploads)
   const $ = (id) => document.getElementById(id);
   const statusEl = $('status');
 
@@ -408,6 +417,42 @@
     const rowBtns = document.createElement('div'); rowBtns.style.cssText = 'display:flex;gap:8px;flex-wrap:wrap;margin:10px 0';
     rowBtns.append(pickBtn, useNow);
     cm.append(player, fileName, rowBtns, grid([field('Tên bài hát (hiện trong thông báo khi phát)', 'musicTitle'), startWrap]));
+
+    // Songs uploaded before: pick one again (library in content.json + files found in the repo)
+    if (!Array.isArray(data.musicLibrary)) data.musicLibrary = [];
+    const lib = data.musicLibrary.slice();
+    audioFiles.forEach(p => { if (!lib.some(x => x.path === p)) lib.push({ path: p, title: p.split('/').pop().replace(/\.[^.]+$/, ''), start: 0 }); });
+    if (data.music && !lib.some(x => x.path === data.music)) lib.unshift({ path: data.music, title: data.musicTitle || data.music.split('/').pop(), start: Number(data.musicStart) || 0 });
+    if (lib.length) {
+      cm.appendChild(sub('Các bài đã đăng'));
+      const list = document.createElement('div'); list.className = 'song-list';
+      lib.forEach(song => {
+        const cur = !musicPending && song.path === data.music;
+        const row = document.createElement('div'); row.className = 'song' + (cur ? ' current' : '');
+        const name = document.createElement('div'); name.className = 'song-name';
+        const t = document.createElement('b'); t.textContent = song.title || song.path.split('/').pop();
+        const meta = document.createElement('small'); meta.textContent = (cur ? 'Đang dùng · ' : '') + `phát từ giây ${song.start || 0}`;
+        name.append(t, meta);
+        const play = document.createElement('button'); play.type = 'button'; play.textContent = '▶ Nghe';
+        play.addEventListener('click', () => {
+          player.src = (song.path === musicUploadedPath && musicUploadedUrl) ? musicUploadedUrl : './' + song.path;
+          player.currentTime = 0;
+          player.play().then(() => { if (song.start) player.currentTime = song.start; }).catch(() => {});
+        });
+        const use = document.createElement('button'); use.type = 'button';
+        use.textContent = cur ? '✓ Đang dùng' : 'Dùng bài này';
+        use.disabled = cur; if (!cur) use.className = 'primary';
+        use.addEventListener('click', () => {
+          if (musicPending) { URL.revokeObjectURL(musicPending.url); musicPending = null; }
+          data.music = song.path; data.musicTitle = song.title; data.musicStart = Number(song.start) || 0;
+          buildEditor(); markDirty();
+          $('editorView').querySelector('[data-path="music"]')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+        row.append(name, play, use);
+        list.appendChild(row);
+      });
+      cm.appendChild(list);
+    }
     root.appendChild(cm);
 
     // ----- Swipe album: variable number of photos -----
@@ -574,7 +619,16 @@
         await putFile(path, await blobToB64(musicPending.file), 'admin: đổi nhạc nền');
         data.music = path;
         musicUploadedUrl = musicPending.url;
+        musicUploadedPath = path;
         musicPending = null;
+        if (!audioFiles.includes(path)) audioFiles.push(path);
+      }
+      // Remember the current song (title + start) so it can be picked again later
+      if (data.music) {
+        if (!Array.isArray(data.musicLibrary)) data.musicLibrary = [];
+        const entry = { path: data.music, title: data.musicTitle || data.music.split('/').pop(), start: Number(data.musicStart) || 0 };
+        const i = data.musicLibrary.findIndex(x => x.path === data.music);
+        if (i >= 0) data.musicLibrary[i] = entry; else data.musicLibrary.push(entry);
       }
       // New album photos
       const albumIds = (data.album || []).filter(s => albumPending[s]);
@@ -637,6 +691,14 @@
         return showLogin('Không truy cập được repo: token sai, hết hạn, hoặc chưa cấp quyền Contents.');
       }
       return showLogin('Lỗi tải dữ liệu: ' + err.message);
+    }
+    // Find songs already in the repo (so older uploads can be picked again)
+    const isAudio = n => /\.(mp3|m4a|aac|ogg|wav)$/i.test(n);
+    for (const dir of ['assets/audio', 'assets/audio/uploads']) {
+      try {
+        const items = await gh(`contents/${dir}?ref=${encodeURIComponent(cfg.branch)}`);
+        if (Array.isArray(items)) items.forEach(it => { if (it.type === 'file' && isAudio(it.name) && !audioFiles.includes(it.path)) audioFiles.push(it.path); });
+      } catch {}
     }
     $('loginView').hidden = true; $('editorView').hidden = false; $('saveBar').hidden = false; $('logoutBtn').hidden = false;
     buildEditor(); setStatus('Chưa có thay đổi');
