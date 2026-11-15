@@ -384,7 +384,7 @@ function playAudio() {
       discBtn.closest('.audio-player-control')?.classList.remove('is-muted');
       discBtn.setAttribute('aria-pressed', 'true');
     }
-    showToast('🎵 Đang phát nhạc: ' + escapeHtml((window.WEDDING && window.WEDDING.musicTitle) || 'Cùng Anh (Acoustic)'));
+    showToast('🎵 Đang phát: ' + escapeHtml((window.WEDDING && window.WEDDING.musicTitle) || 'Cùng Anh (Acoustic)'));
   }).catch(() => {
     // Autoplay was blocked
   });
@@ -399,7 +399,7 @@ function pauseAudio() {
     discBtn.closest('.audio-player-control')?.classList.add('is-muted');
     discBtn.setAttribute('aria-pressed', 'false');
   }
-  showToast('🔇 Đã tắt nhạc · chạm đĩa để bật lại');
+  showToast('🔇 Đã ngưng phát');
 }
 
 function toggleAudio(e) {
@@ -830,8 +830,6 @@ function initGiftModal() {
     });
   }
 
-  initBankAppLinks();
-
   // Copy Account Number
   window.copyAccountNumber = function(accNumber) {
     const safe = escapeHtml(String(accNumber)); // value comes from admin-edited DOM text
@@ -841,61 +839,6 @@ function initGiftModal() {
       showToast(`STK: ${safe}`);
     });
   };
-}
-
-/* Open the guest's banking app with the couple's account pre-filled (VietQR deeplink).
-   The guest types the amount. Recipient bank code comes from the bank name in content.json. */
-const RECEIVER_BANK_CODES = {
-  vietinbank: 'icb', shinhan: 'shbvn', vietcombank: 'vcb', bidv: 'bidv', agribank: 'vba',
-  techcombank: 'tcb', mbbank: 'mb', mb: 'mb', acb: 'acb', vpbank: 'vpb', tpbank: 'tpb',
-  sacombank: 'stb', hdbank: 'hdb', vib: 'vib', shb: 'shb', msb: 'msb', ocb: 'ocb'
-};
-const GUEST_BANK_APPS = [
-  ['vcb', 'Vietcombank'], ['icb', 'VietinBank'], ['bidv', 'BIDV'], ['vba', 'Agribank'],
-  ['mb', 'MB Bank'], ['tcb', 'Techcombank'], ['acb', 'ACB'], ['vpb', 'VPBank'],
-  ['tpb', 'TPBank'], ['stb', 'Sacombank'], ['hdb', 'HDBank'], ['vib', 'VIB'],
-  ['shbvn', 'Shinhan'], ['shb', 'SHB'], ['msb', 'MSB'], ['ocb', 'OCB']
-];
-function initBankAppLinks() {
-  [['giftPaneGroom', 'groom'], ['giftPaneBride', 'bride']].forEach(([id, side]) => {
-    const pane = document.getElementById(id);
-    if (!pane || pane.querySelector('.bank-app-btn')) return;
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'bank-app-btn';
-    btn.textContent = 'Chuyển khoản ngay';
-    btn.addEventListener('click', () => openBankPicker(side));
-    pane.appendChild(btn);
-  });
-}
-function openBankPicker(side) {
-  const b = (window.WEDDING && window.WEDDING.bank && window.WEDDING.bank[side]) || {};
-  const pane = document.getElementById(side === 'groom' ? 'giftPaneGroom' : 'giftPaneBride');
-  const strongs = pane ? pane.querySelectorAll('strong') : [];
-  const bankName = b.bank || (strongs[0] && strongs[0].textContent) || '';
-  const number = String(b.number || (strongs[2] && strongs[2].textContent) || '').replace(/\s/g, '');
-  const code = RECEIVER_BANK_CODES[bankName.toLowerCase().replace(/bank$|\s/g, '')] || RECEIVER_BANK_CODES[bankName.toLowerCase().replace(/\s/g, '')];
-  if (!code || !number) { window.copyAccountNumber(number); return; }
-  const note = 'Mung cuoi ' + (window.WEDDING ? (window.WEDDING.groomName + ' ' + window.WEDDING.brideName) : '');
-  let sheet = document.getElementById('bankAppSheet');
-  if (sheet) sheet.remove();
-  sheet = document.createElement('div');
-  sheet.id = 'bankAppSheet';
-  sheet.className = 'bank-app-sheet';
-  sheet.innerHTML = '<div class="bank-app-panel"><p>Chọn app ngân hàng của bạn</p><div class="bank-app-grid"></div><button type="button" class="bank-app-close">Đóng</button></div>';
-  const grid = sheet.querySelector('.bank-app-grid');
-  GUEST_BANK_APPS.forEach(([app, label]) => {
-    const a = document.createElement('a');
-    a.textContent = label;
-    a.href = 'https://dl.vietqr.io/pay?app=' + app + '&ba=' + encodeURIComponent(number + '@' + code) +
-      '&tn=' + encodeURIComponent(note.normalize('NFD').replace(/\p{M}/gu, '').replace(/đ/g, 'd').replace(/Đ/g, 'D').trim());
-    a.target = '_blank';
-    a.rel = 'noopener';
-    grid.appendChild(a);
-  });
-  const close = () => sheet.remove();
-  sheet.addEventListener('click', (e) => { if (e.target === sheet || e.target.classList.contains('bank-app-close')) close(); });
-  document.body.appendChild(sheet);
 }
 
 /* ==========================================================

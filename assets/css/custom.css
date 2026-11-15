@@ -1737,22 +1737,6 @@ body {
   .lightbox-next { right: max(8px, env(safe-area-inset-right, 0px)); }
 }
 
-/* Bank app deeplink */
-.bank-app-btn{display:block;width:100%;margin-top:12px;padding:11px 14px;border:0;border-radius:999px;background:#b5536b;color:#fff;font-family:'Lora',serif;font-size:14px;cursor:pointer;box-shadow:0 6px 16px rgba(181,83,107,.25)}
-.bank-app-sheet{position:fixed;inset:0;z-index:130;background:rgba(40,20,28,.45);display:flex;align-items:center;padding:16px;justify-content:center}
-.bank-app-panel{background:#fffaf8;width:100%;max-width:440px;border-radius:20px;padding:18px 16px 14px;text-align:center;font-family:'Lora',serif;color:#7a3346}
-.bank-app-panel p{margin:0 0 12px;font-size:16px}
-.bank-app-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
-.bank-app-grid a{padding:10px 4px;border:1px solid #efd3da;border-radius:12px;background:#fff;color:#7a3346;font-size:12px;text-decoration:none}
-.bank-app-panel small{display:block;margin:12px 0 8px;opacity:.75}
-.bank-app-close{display:inline-block;min-width:120px;padding:9px 22px;border:1px solid #b5536b;border-radius:999px;background:#fff;color:#b5536b;font-family:inherit;font-size:14px;cursor:pointer;box-shadow:0 4px 12px rgba(181,83,107,.15)}
-/* Bank app buttons: hover + press feedback */
-.bank-app-btn,.bank-app-grid a,.bank-app-close{transition:transform .18s ease,background-color .18s ease,color .18s ease,border-color .18s ease,box-shadow .18s ease;-webkit-tap-highlight-color:transparent}
-.bank-app-btn:hover{background:#a3445c;box-shadow:0 8px 20px rgba(181,83,107,.35);transform:translateY(-1px)}
-.bank-app-grid a:hover{border-color:#b5536b;background:#fdf0f3;box-shadow:0 4px 12px rgba(181,83,107,.18);transform:translateY(-2px)}
-.bank-app-close:hover{background:#b5536b;color:#fff}
-.bank-app-btn:active,.bank-app-grid a:active,.bank-app-close:active{transform:scale(.95);box-shadow:0 2px 6px rgba(181,83,107,.2)}
-.bank-app-grid a:active{background:#b5536b;color:#fff;border-color:#b5536b}
 /* Gift modal fits one phone screen without scrolling */
 @media (max-width: 640px) {
   #giftModal .modal-container { padding: 18px 16px 14px !important; max-height: 94dvh; }
@@ -1765,5 +1749,6 @@ body {
   #giftModal .bank-qr-img { width: auto; height: min(30dvh, 190px); margin-bottom: 8px; padding: 3px; }
   #giftModal .bank-info-line { padding: 5px 10px; margin-bottom: 5px; font-size: 13px; }
   #giftModal .copy-btn { padding: 4px 10px; }
-  #giftModal .bank-app-btn { margin-top: 8px; padding: 9px 14px; }
 }
+/* Compact single-line toasts */
+.toast-msg { padding: 7px 16px !important; font-size: 13px !important; gap: 6px !important; white-space: nowrap; max-width: calc(100vw - 32px); overflow: hidden; text-overflow: ellipsis; display: block !important; }
