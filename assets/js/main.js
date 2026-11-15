@@ -572,10 +572,12 @@ function initLightbox() {
 
   let currentIndex = 0;
 
+  let list = galleryImages; // which set the lightbox is browsing (album or couple portraits)
+
   function showImage(index) {
-    currentIndex = (index + galleryImages.length) % galleryImages.length;
-    lightboxImg.src = galleryImages[currentIndex];
-    lightboxCounter.textContent = `${currentIndex + 1} / ${galleryImages.length}`;
+    currentIndex = (index + list.length) % list.length;
+    lightboxImg.src = list[currentIndex];
+    lightboxCounter.textContent = `${currentIndex + 1} / ${list.length}`;
   }
 
   function openLightbox(index) {
@@ -598,8 +600,38 @@ function initLightbox() {
       e.preventDefault();
       const img = btn.querySelector('img') || btn;
       const src = img.getAttribute('src');
+      list = galleryImages;
       const foundIdx = galleryImages.indexOf(src);
       openLightbox(foundIdx !== -1 ? foundIdx : idx % galleryImages.length);
+    });
+  });
+
+  // Every other photo on the invitation opens in the lightbox too.
+  // Browsing goes through all photos in page order. Decorative art (img_*) and QR codes are skipped.
+  const main = document.querySelector('main') || document.body;
+  const isPhotoKey = k => k && k.startsWith('photos.') && !k.startsWith('photos.img_') && !/qr/i.test(k);
+  const others = [];
+  main.querySelectorAll('[data-ci], [data-cbg]').forEach(el => {
+    const key = el.getAttribute('data-ci') || el.getAttribute('data-cbg');
+    if (!isPhotoKey(key)) return;
+    if (el.closest('.styles-module__WlSJYG__photo, .styles-module__WlSJYG__gallery-image, .styles-module__WlSJYG__film-images')) return; // album: handled above
+    others.push(el);
+  });
+  const srcOf = el => {
+    if (el.tagName === 'IMG') return el.getAttribute('src');
+    const m = /url\(["']?([^"')]+)["']?\)/.exec(el.style.backgroundImage || '');
+    return m ? m[1] : null;
+  };
+  others.forEach((el) => {
+    const target = el.tagName === 'IMG' ? (el.closest('.styles-module__WlSJYG__person-photo') || el.parentElement || el) : el;
+    target.style.cursor = 'pointer';
+    target.addEventListener('click', (e) => {
+      if (e.target.closest('a, button:not(.styles-module__WlSJYG__photo), input, textarea, select')) return; // don't hijack links/buttons
+      e.preventDefault();
+      const all = Array.from(new Set(others.map(srcOf).filter(Boolean).concat(galleryImages)));
+      list = all;
+      const i = all.indexOf(srcOf(el));
+      openLightbox(i < 0 ? 0 : i);
     });
   });
 

@@ -1619,3 +1619,22 @@ body {
 .audio-player-control.is-muted .mute-slash { opacity: 1; transform: scale(1); }
 .audio-player-control.is-muted .vinyl-disc-btn { filter: grayscale(.55) brightness(.97); }
 .audio-player-control.is-muted .sound-waves { opacity: 0; }
+
+/* ===== Smaller music disc on phones ===== */
+@media (max-width: 640px) {
+  .audio-player-control {
+    right: max(14px, env(safe-area-inset-right, 0px)) !important;
+    bottom: calc(14px + env(safe-area-inset-bottom, 0px)) !important;
+    gap: 6px !important;
+  }
+  .vinyl-disc-btn {
+    width: 38px !important; height: 38px !important;
+    box-shadow: 0 4px 12px rgba(200, 90, 112, .3) !important;
+  }
+  .vinyl-disc-center { width: 13px !important; height: 13px !important; }
+  .vinyl-disc-center svg { width: 7px; height: 7px; }
+  .sound-waves { height: 11px !important; padding: 3px 5px !important; }
+  .wave-bar { width: 2px !important; }
+  .mute-slash { width: 38px; height: 38px; }
+  .mute-slash::before { width: 46px; height: 3px; margin: -1.5px 0 0 -23px; }
+}
