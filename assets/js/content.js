@@ -7,6 +7,10 @@
  * If the fetch fails (e.g. opened via file://), the HTML defaults stay as-is.
  */
 (function () {
+  // F5 never restores the old scroll position: the invitation always starts at the top
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  window.scrollTo(0, 0);
+
   function get(obj, path) {
     return path.split('.').reduce((o, k) => (o == null ? undefined : o[k]), obj);
   }

@@ -75,6 +75,9 @@ function initEnvelope() {
     if (isOpening) return;
     isOpening = true;
 
+    // Always start the invitation from the top
+    window.scrollTo(0, 0);
+
     // 1. Play wedding audio immediately upon direct user gesture
     playAudio();
 
@@ -222,7 +225,10 @@ function initAlbumCarousel() {
   });
   track.after(dots);
 
-  const last = slides.length - 1;
+  const n = slides.length, last = n - 1;
+  const loop = n >= 4;                  // endless ring (too few photos would visibly jump)
+  const mod = (v) => ((v % n) + n) % n;
+  const wrap = (v) => mod(v + n / 2) - n / 2; // signed offset in [-n/2, n/2)
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const ease = t => t * t * (3 - 2 * t); // smoothstep
   let w = slides[0].offsetWidth || 1;   // card width = spacing between card centers
@@ -231,17 +237,17 @@ function initAlbumCarousel() {
 
   function render() {
     slides.forEach((s, i) => {
-      const d = i - pos;                       // <0: card is left of center
+      const d = loop ? wrap(i - pos) : i - pos; // <0: card is left of center
       const a = Math.min(Math.abs(d), 2.5);
       const k = ease(Math.min(a, 1)) + Math.max(0, a - 1) * 0.5;
       const tuck = (d < 0 ? -1 : 1) * k * (d < 0 ? 0.40 : 0.14); // fraction of card width
-      const tx = -pos * w - tuck * w;
+      const tx = (d - i) * w - tuck * w;
       const scale = 1 - k * 0.08;
       s.style.setProperty('transform', 'translate3d(' + tx.toFixed(1) + 'px,0,0) scale(' + scale.toFixed(4) + ')', 'important');
-      s.style.zIndex = String(100 + i);
+      s.style.zIndex = String(1000 + Math.round(d * 10));
       s.style.setProperty('--dim', d < 0 ? Math.min(k * 0.32, 0.5).toFixed(3) : '0');
     });
-    const i = clamp(Math.round(pos), 0, last);
+    const i = loop ? mod(Math.round(pos)) : clamp(Math.round(pos), 0, last);
     if (i !== active) {
       active = i;
       slides.forEach((s, k) => s.classList.toggle('is-active', k === i));
@@ -251,8 +257,9 @@ function initAlbumCarousel() {
 
   // Eased animation of `pos` to a card
   let anim = 0;
-  function glideTo(i, ms) {
-    i = clamp(i, 0, last);
+  function glideTo(i, ms, absolute) {
+    if (!loop) i = clamp(i, 0, last);
+    else if (!absolute) i = Math.round(pos) + wrap(i - Math.round(pos)); // dot tap: shortest way round
     cancelAnimationFrame(anim);
     const from = pos, to = i, t0 = performance.now();
     const dur = ms || Math.min(650 + Math.abs(to - from) * 260, 1600);
@@ -283,18 +290,18 @@ function initAlbumCarousel() {
     vel = 0.75 * vel + 0.25 * ((e.clientX - lastX) / Math.max(1, now - lastT)); // px/ms
     lastX = e.clientX; lastT = now;
     let p = startPos - dx / w;
-    if (p < 0) p = p * 0.35; else if (p > last) p = last + (p - last) * 0.35; // rubber-band at the ends
+    if (loop) { /* endless */ } else if (p < 0) p = p * 0.35; else if (p > last) p = last + (p - last) * 0.35; // rubber-band at the ends
     pos = p;
     render(); // same frame as the finger
   });
   function release() {
     if (!down) return;
     down = false;
-    if (locked !== 'x') { glideTo(Math.round(pos), 400); return; }
+    if (locked !== 'x') { glideTo(Math.round(pos), 400, true); return; }
     if (performance.now() - lastT > 90) vel = 0;        // finger rested before lifting: no flick
     let target = Math.round(pos - (vel * 190) / w);    // fast flick travels several cards, but gently
     if (target === Math.round(startPos) && Math.abs(vel) > 0.3) target += vel < 0 ? 1 : -1;
-    glideTo(target);
+    glideTo(target, 0, true);
   }
   window.addEventListener('pointerup', release);
   window.addEventListener('pointercancel', release);
