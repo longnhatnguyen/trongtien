@@ -882,7 +882,7 @@ function openBankPicker(side) {
   sheet = document.createElement('div');
   sheet.id = 'bankAppSheet';
   sheet.className = 'bank-app-sheet';
-  sheet.innerHTML = '<div class="bank-app-panel"><p>Chọn app ngân hàng của bạn</p><div class="bank-app-grid"></div><small>Số tiền bạn tự nhập trong app 💝</small><button type="button" class="bank-app-close">Đóng</button></div>';
+  sheet.innerHTML = '<div class="bank-app-panel"><p>Chọn app ngân hàng của bạn</p><div class="bank-app-grid"></div><button type="button" class="bank-app-close">Đóng</button></div>';
   const grid = sheet.querySelector('.bank-app-grid');
   GUEST_BANK_APPS.forEach(([app, label]) => {
     const a = document.createElement('a');
